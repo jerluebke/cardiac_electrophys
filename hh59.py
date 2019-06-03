@@ -1,4 +1,20 @@
 # -*- coding: utf-8 -*-
+"""simple implementation of the Hodgkin-Huxley model describing the behaviour
+of the action potential of a single cardiomyocyte.
+
+the potential is said to obey the capacitor equation
+    c dV/dt = I_p - sum_s I_s
+
+    c   - specific capacity [F/m^2]
+    I_p - source current density due to ion pumps [A/m^2]
+    I_s - current densities due to ion species s
+
+the current densities I_s are modeled by gating variables 0 ≤ n, m, h ≤ 1
+describing the dynamics of the respective ion channels.
+
+one has a system of four first-order ODEs (V, n, m, h) which are integrated
+with a simple Euler step.
+"""
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -45,7 +61,7 @@ def gate(f, V, name):
     return ALPHA[name](V) * (1. - f) - BETA[name](V) * f
 
 
-def VG(V, n, m, h, Ip=0):
+def VG(V, n, m, h, I_p=0):
     """action potential according to
         V_n+1 = V_n + dt * VG(V)
 
@@ -53,24 +69,25 @@ def VG(V, n, m, h, Ip=0):
     ======
     V       :   current value of action potential
     n, m, h :   current values of gating variables (to compute currents)
-    Ip      :   source (ion pumps) current at current time
+    I_p     :   source (ion pumps) current at current time
 
     returns
     =======
     VG(V, n, m, h) = -1/c * (sum I_s(V, n, m, h))
     """
     c = 1.
-    return -(I_K(V, n) + I_Na(V, m, h) + I_l(V) - Ip) / c
+    return -(I_K(V, n) + I_Na(V, m, h) + I_l(V) - I_p) / c
 
 
 # simulation parameters
 #  dt      = 0.055  # max dt for reasonable results
 dt      = 0.01
-tmax    = 25.
+tmax    = 50.
 t       = np.arange(0., tmax, dt)
 steps   = t.size
-Ip      = np.zeros_like(t)
+#  Ip      = np.zeros_like(t)
 #  Ip[int(20./dt):int(80./dt)] += 10.
+Ip      = 10.*np.ones_like(t)
 V_0 = -7.
 
 # initialize result arrays
@@ -96,11 +113,11 @@ for i in range(steps-1):
 plt.figure()
 plt.subplot(131,
             title='Potential',
-            xlabel=r'$t/ms$', ylabel=r'$-V/mV$')
+            xlabel=r'$t/ms$', ylabel=r'$V/mV$')
 plt.plot(t, V)
 
 plt.subplot(132,
-            title='Currents',
+            title='Current Densities',
             xlabel=r'$t/ms$', ylabel=r'$I/Am^{-2}$')
 plt.plot(t, I_K(V, n),
          t, I_Na(V, m, h),

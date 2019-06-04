@@ -16,26 +16,33 @@ import matplotlib.pyplot as plt
 class Alpha:
     """Aliev-Panfilov simulation class"""
 
-    def __init__(self, V0, W0, tmax, dt, a, k, e0, m1, m2):
+    def __init__(self, V0, W0, tmax, dt, a, k, e0, m1, m2,
+                 _extra_dim=None, _prepare_plot=True):
         # set simulation parameters
         self.__dict__.update(dict(a=a, k=k, e0=e0, m1=m1, m2=m2))
         self.t      = np.arange(0, tmax, dt)
         self.dt     = dt
         self.steps  = self.t.size
 
+        # preparing shape tuple for result array
+        shape = (2, self.steps)
+        if _extra_dim is not None:
+            shape = (*shape, *_extra_dim)
+
         # result array
-        self.VW     = np.zeros((2, self.steps))
+        self.VW     = np.zeros(shape)
         self.VW[0,0]= V0
         self.VW[1,0]= W0
 
         # plotting
-        self.fig        = plt.figure()
-        self.phaseplot  = self.fig.add_subplot(121,
-                                               title='phase plot',
-                                               xlabel='V', ylabel='W')
-        self.timeplot   = self.fig.add_subplot(122,
-                                               title='development of V, W',
-                                               xlabel='t/ms', ylabel='V/mV')
+        if _prepare_plot:
+            self.fig        = plt.figure()
+            self.phaseplot  = self.fig.add_subplot(121,
+                                                   title='phase plot',
+                                                   xlabel='V', ylabel='W')
+            self.timeplot   = self.fig.add_subplot(122,
+                                                   title='development of V, W',
+                                                   xlabel='t/ms', ylabel='V/mV')
 
 
     def G(self, V, W):
@@ -111,29 +118,31 @@ class Alpha:
 
 
 
-params = dict(
+PARAMS = dict(
     V0=.2, W0=.0, tmax=60., dt=.01,
     a=.15, k=8., e0=2e-3, m1=.2, m2=.3
 )
 
-alpha = Alpha(**params)
-alpha.portrait()
-alpha.plot()
 
-alpha = Alpha(**params)
-alpha.vary_param('a', [.1, .125, .15, .175, .199, .2])
+if __name__ == '__main__':
+    alpha = Alpha(**PARAMS)
+    alpha.portrait()
+    alpha.plot()
 
-alpha = Alpha(**params)
-alpha.vary_param('k', [4., 6., 8., 10., 12., 14.])
+    alpha = Alpha(**PARAMS)
+    alpha.vary_param('a', [.1, .125, .15, .175, .199, .2])
 
-alpha = Alpha(**params)
-alpha.vary_param('e0', [1e-5, 1e-4, 2e-3, 1e-1, 1.])
+    alpha = Alpha(**PARAMS)
+    alpha.vary_param('k', [4., 6., 8., 10., 12., 14.])
 
-alpha = Alpha(**params)
-alpha.vary_param('m1', [.05, .1, .2, .5, 1., 2.])
+    alpha = Alpha(**PARAMS)
+    alpha.vary_param('e0', [1e-5, 1e-4, 2e-3, 1e-1, 1.])
 
-alpha = Alpha(**params)
-alpha.vary_param('m2', [.1, .3, 1., 2., 5.])
+    alpha = Alpha(**PARAMS)
+    alpha.vary_param('m1', [.05, .1, .2, .5, 1., 2.])
+
+    alpha = Alpha(**PARAMS)
+    alpha.vary_param('m2', [.1, .3, 1., 2., 5.])
 
 
 #  vim: set ff=unix tw=79 sw=4 ts=8 et ic ai :

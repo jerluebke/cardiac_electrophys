@@ -9,40 +9,15 @@ phenomenological relaxation variable W. Thus it is more suitable for large
 scale simulations of tissue.
 """
 
+from abc import ABC
 import numpy as np
 import matplotlib.pyplot as plt
 
 
-class Alpha:
-    """Aliev-Panfilov simulation class"""
 
-    def __init__(self, V0, W0, tmax, dt, a, k, e0, m1, m2,
-                 _extra_dim=None, _prepare_plot=True):
-        # set simulation parameters
+class AlphaBase(ABC):
+    def __init__(self, a, k, e0, m1, m2):
         self.__dict__.update(dict(a=a, k=k, e0=e0, m1=m1, m2=m2))
-        self.t      = np.arange(0, tmax, dt)
-        self.dt     = dt
-        self.steps  = self.t.size
-
-        # preparing shape tuple for result array
-        shape = (2, self.steps)
-        if _extra_dim is not None:
-            shape = (*shape, *_extra_dim)
-
-        # result array
-        self.VW     = np.zeros(shape)
-        self.VW[0,0]= V0
-        self.VW[1,0]= W0
-
-        # plotting
-        if _prepare_plot:
-            self.fig        = plt.figure()
-            self.phaseplot  = self.fig.add_subplot(121,
-                                                   title='phase plot',
-                                                   xlabel='V', ylabel='W')
-            self.timeplot   = self.fig.add_subplot(122,
-                                                   title='development of V, W',
-                                                   xlabel='t/ms', ylabel='V/mV')
 
 
     def G(self, V, W):
@@ -57,6 +32,38 @@ class Alpha:
 
     def e(self, V, W):
         return self.e0 + self.m1 * W / (V + self.m2)
+
+
+    def integrate(self):
+        pass
+
+
+
+class Alpha(AlphaBase):
+    """Aliev-Panfilov simulation class"""
+
+    def __init__(self, V0, W0, tmax, dt,
+                 _prepare_plot=True, **params):
+        # set simulation parameters
+        super().__init__(**params)
+        self.t      = np.arange(0, tmax, dt)
+        self.dt     = dt
+        self.steps  = self.t.size
+
+        # result array
+        self.VW     = np.zeros((2, self.steps))
+        self.VW[0,0]= V0
+        self.VW[1,0]= W0
+
+        # plotting
+        if _prepare_plot:
+            self.fig        = plt.figure()
+            self.phaseplot  = self.fig.add_subplot(121,
+                                                   title='phase plot',
+                                                   xlabel='V', ylabel='W')
+            self.timeplot   = self.fig.add_subplot(122,
+                                                   title='development of V, W',
+                                                   xlabel='t/ms', ylabel='V/mV')
 
 
     def integrate(self):

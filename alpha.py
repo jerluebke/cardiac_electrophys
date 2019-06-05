@@ -9,13 +9,12 @@ phenomenological relaxation variable W. Thus it is more suitable for large
 scale simulations of tissue.
 """
 
-from abc import ABC
 import numpy as np
 import matplotlib.pyplot as plt
 
 
 
-class AlphaBase(ABC):
+class AlphaBase:
     def __init__(self, a, k, e0, m1, m2):
         self.__dict__.update(dict(a=a, k=k, e0=e0, m1=m1, m2=m2))
 

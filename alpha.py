@@ -15,6 +15,15 @@ import matplotlib.pyplot as plt
 
 
 class AlphaBase:
+    """base class for aliev-panfilov simulations, containing the five
+    parameters
+        a, k, e0, m1, m2
+    and the two equations
+        dV/dt = G_1(V, W)
+        dW/dt = G_2(V, W)
+    which are provided via `self.G(V, W)`
+    """
+
     def __init__(self, a, k, e0, m1, m2):
         self.__dict__.update(dict(a=a, k=k, e0=e0, m1=m1, m2=m2))
 
@@ -34,7 +43,8 @@ class AlphaBase:
 
 
     def integrate(self):
-        pass
+        """to be overridden in inherited class"""
+        return NotImplemented
 
 
 

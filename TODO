@@ -1,5 +1,4 @@
 TODO
 ====
- * Documentation alpha.py, pulse1d
- * pulse1d.py: systematically vary xmax and dx, take measurements, compare
+ * pulse1d.py: systematically vary dx
  * implement pulse2.py (Assignment 4)

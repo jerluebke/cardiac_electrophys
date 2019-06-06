@@ -12,11 +12,12 @@ def Lap1d(a, o, dx, boundary='neumann'):
 
     Available boundary conditions: von Neumann, periodic
     """
+    o[:] = (np.roll(a, 1) + np.roll(a, -1) - 2*a) / dx**2
     if boundary == 'neumann':
-        o[1:-1] = (a[2:] - 2*a[1:-1] + a[:-2]) / dx**2
         o[0], o[-1] = o[1], o[-2]
     elif boundary == 'periodic':
-        o[:] = (np.roll(a, 1) + np.roll(a, -1) - 2*a) / dx**2
+        # do nothing, already imposed by `np.roll`
+        pass
     return o
 
 
@@ -307,7 +308,7 @@ def animation_of_propagation_action_potential():
 
 
 if __name__ == '__main__':
-    measurements_for_varying_xmax()
+    #  measurements_for_varying_xmax()
     fig, anim = animation_of_propagation_action_potential()
 
 

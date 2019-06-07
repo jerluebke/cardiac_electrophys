@@ -38,22 +38,22 @@ class Pulse2d(AlphaBase):
                  **alpha_params):
         super().__init__(**alpha_params)
 
-        self.dx = dx
-        self.eta = eta
-        self.dt = .2 * dx**2 / (2. * eta)
+        self.dx     = dx
+        self.eta    = eta
+        self.dt     = .2 * dx**2 / (2. * eta)
 
-        self.t = np.arange(0, tmax, self.dt)
-        self.X, self.Y = np.mgrid[0:xmax:dx,0:ymax:dx]
-        self.steps = self.t.size
+        self.t          = np.arange(0, tmax, self.dt)
+        self.X, self.Y  = np.mgrid[0:xmax:dx,0:ymax:dx]
+        self.steps      = self.t.size
 
-        self.V = np.zeros_like(self.X)
-        self.W = np.zeros_like(self.X)
+        self.V  = np.zeros_like(self.X)
+        self.W  = np.zeros_like(self.X)
         self.LV = np.zeros_like(self.X)
 
         self.plot_interval = plot_interval
 
 
-    def integrate(self):
+    def integrate_channel(self):
         V, W, LV = self.V, self.W, self.LV
         dx, dt, eta = self.dx, self.dt, self.eta
 
@@ -69,6 +69,25 @@ class Pulse2d(AlphaBase):
 
             if i == 500:
                 xbound = 'periodic'
+
+            if i % self.plot_interval == 0:
+                yield V, W
+
+
+    def integrate_spiral(self, delay):
+        V, W, LV = self.V, self.W, self.LV
+        dx, dt, eta = self.dx, self.dt, self.eta
+
+        for i in range(self.steps-1):
+            Lap2d(V, LV, dx, both='neumann')
+            dV, dW = self.G(V, W)
+
+            V += dt * dV + dt * eta * LV
+            W += dt * dW
+
+            if i == delay:
+                xm, ym = self.X.shape[0] // 2, self.X.shape[1] // 2
+                V[xm-5:xm+5,ym-5:ym+5] = 1.
 
             if i % self.plot_interval == 0:
                 yield V, W
@@ -91,7 +110,8 @@ def step(arg):
     W_img.set_data(w)
     return V_img, W_img,
 
-anim = animation.FuncAnimation(fig, step, frames=p.integrate(), interval=20,
+# double spirals: 1417 <= delay <= 1546
+anim = animation.FuncAnimation(fig, step, frames=p.integrate_spiral(1546), interval=20,
                                blit=True, repeat=False)
 
 

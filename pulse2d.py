@@ -40,7 +40,7 @@ class Pulse2d(AlphaBase):
 
         self.dx = dx
         self.eta = eta
-        self.dt = .1 * dx**2 / (2. * eta)
+        self.dt = .2 * dx**2 / (2. * eta)
 
         self.t = np.arange(0, tmax, self.dt)
         self.X, self.Y = np.mgrid[0:xmax:dx,0:ymax:dx]
@@ -57,12 +57,18 @@ class Pulse2d(AlphaBase):
         V, W, LV = self.V, self.W, self.LV
         dx, dt, eta = self.dx, self.dt, self.eta
 
+        xbound = 'neumann'
+        ybound = 'dirichlet'
+
         for i in range(self.steps-1):
-            Lap2d(V, LV, dx, both='neumann')
+            Lap2d(V, LV, dx, xbound=xbound, ybound=ybound)
             dV, dW = self.G(V, W)
 
-            V += dt * eta * LV
-            W += dt * W
+            V += dt * dV + dt * eta * LV
+            W += dt * dW
+
+            if i == 500:
+                xbound = 'periodic'
 
             if i % self.plot_interval == 0:
                 yield V, W
@@ -70,19 +76,20 @@ class Pulse2d(AlphaBase):
 
 
 params = dict(a=.15, k=8., e0=2e-3, m1=.2, m2=.3)
-p = Pulse2d(128, 64, .1, 1000, .3, 50, **params)
-p.V[0,:] = .9
+p = Pulse2d(128, 64, .5, 1000, .3, 50, **params)
+p.V[0,:] = 1.
 
-#  fig, (aV, aW) = plt.subplots(1, 2)
-fig, aV = plt.subplots()
+fig, (aV, aW) = plt.subplots(1, 2)
+aV.grid(False)
+aW.grid(False)
 V_img = aV.imshow(p.V, animated=True)
-#  W_img = aW.imshow(p.W, animated=True)
+W_img = aW.imshow(p.V, animated=True)
 
 def step(arg):
-    v = arg[0]
-    V_img.set_array(v)
-    #  W_img.set_array(w)
-    return V_img, # W_img,
+    v, w = arg
+    V_img.set_data(v)
+    W_img.set_data(w)
+    return V_img, W_img,
 
 anim = animation.FuncAnimation(fig, step, frames=p.integrate(), interval=20,
                                blit=True, repeat=False)

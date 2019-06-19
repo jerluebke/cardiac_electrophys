@@ -43,7 +43,7 @@ class Pulse2d(AlphaBase):
         self.dt     = .2 * dx**2 / (2. * eta)
 
         self.X, self.Y  = np.mgrid[0:xmax:dx,0:ymax:dx]
-        self.steps      = tmax // self.dt + 1.
+        self.steps      = int(tmax // self.dt + 1)
 
         self.V  = np.zeros_like(self.X)
         self.W  = np.zeros_like(self.X)

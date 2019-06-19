@@ -2,6 +2,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib import animation
 
 
 def Lap2d(a, o, dx):
@@ -56,7 +57,7 @@ class FCHE_Base:
     def _GV_3V(self, V, v, w, p):
         return -(self._I_fi(V, v, p) + self._I_so(V, p) + self._I_si(V, w)) / self.c
 
-    def _GV_2V(self, V, v, p):
+    def _GV_2V(self, V, v, _unused, p):
         return -(self._I_fi(V, v, p) + self._I_so(V, p)) / self.c
 
 
@@ -80,17 +81,13 @@ class FCHE_Single_Cell(FCHE_Base):
 
     def integrate(self):
         V, v, w = self.V, self.v, self.w
-        p = np.ones_like(V)
-        q = np.ones_like(V)
 
         for i in range(self.steps-1):
-            p[:] = q[:] = 1.
-            p[V < self.Vc] = 0.
-            q[V < self.Vv] = 0.
-
-            V += self.dt * self.GV(V, v, w, p)
-            v += self.dt * self.Gv(v, p, q)
-            w += self.dt * self.Gw(w, p)
+            p = 0. if V[i] < self.Vc else 1.
+            q = 0. if V[i] < self.Vv else 1.
+            V[i+1] = V[i] + self.dt * self.GV(V[i], v[i], w[i], p)
+            v[i+1] = v[i] + self.dt * self.Gv(v[i], p, q)
+            w[i+1] = w[i] + self.dt * self.Gw(w[i], p)
 
 
 
@@ -103,7 +100,7 @@ class FCHE_2D(FCHE_Base):
         self.dx     = dx                        # lattice constant
         self.eta    = eta                       # diffusity
         self.dt     = .2 * dx**2 / (2. * eta)   # cfl condition
-        self.steps  = tmax // self.dt + 1.
+        self.steps  = int(tmax // self.dt + 1)
 
         self.X, self.Y = np.mgrid[0:xmax:dx,0:ymax:dx]
         self.V  = np.zeros_like(self.X)
@@ -117,7 +114,7 @@ class FCHE_2D(FCHE_Base):
     def integrate(self):
         # pull params and arrays to local scope
         Vc, Vv, dx, dt, eta = self.Vc, self.Vv, self.dx, self.dt, self.eta
-        V, v, w, LV = self.V, self.v, self.w. self.LV
+        V, v, w, LV = self.V, self.v, self.w, self.LV
 
         p = np.ones_like(V)
         q = np.ones_like(V)
@@ -127,7 +124,8 @@ class FCHE_2D(FCHE_Base):
             p[V < Vc] = 0.
             q[V < Vv] = 0.
 
-            Lap2d(V, dx, out=LV, both='neumann')
+            Lap2d(V, LV, dx)
+                  #  both='neumann')
             V += dt * eta * LV + dt * self.GV(V, v, w, p)
             v += dt * self.Gv(v, p, q)
             w += dt * self.Gw(w, p)
@@ -204,6 +202,58 @@ PARAM_SETS = {
     )
 }
 
+
+
+def plot_single_cell():
+    fig, ((aV, av, aw), (aIfi, aIsi, aIso)) = plt.subplots(2, 3)
+
+    aV.set(title='action potential', xlabel='t/ms', ylabel='V/mV')
+    av.set(title='fast gate variable', xlabel='t/ms')
+    aw.set(title='slow gate variable', xlabel='t/ms')
+    aIfi.set(title='fast inward current', xlabel='t/ms')
+    aIsi.set(title='slow inward current', xlabel='t/ms')
+    aIso.set(title='slow outward current', xlabel='t/ms')
+
+    for i in PARAM_SETS.keys():
+        sim = FCHE_Single_Cell(.3, 1., 1., 400, .01, **PARAM_SETS[i])
+        sim.integrate()
+
+        p = np.ones_like(sim.V)
+        p[sim.V < sim.Vc] = 0.
+        V_rescaled = 100 * sim.V - 80
+
+        aV.plot(sim.t, V_rescaled, label='param set %d' % i)
+        av.plot(sim.t, sim.v)
+        aw.plot(sim.t, sim.w)
+        aIfi.plot(sim.t, sim._I_fi(V_rescaled, sim.v, p))
+        aIsi.plot(sim.t, sim._I_si(V_rescaled, sim.w))
+        aIso.plot(sim.t, sim._I_so(V_rescaled, p))
+
+    aV.legend()
+
+
+def plot_2d_tissue(i):
+    sim = FCHE_2D(256, 256, 1., 10000, .3, **PARAM_SETS[i])
+    sim.V[:128,80:120] = .3
+    sim.v[:128,100:130] = 1.
+    sim.w[:128,80:120] = 1.
+
+    fig, aV = plt.subplots()
+    aV.grid(False)
+    V_img = aV.imshow(sim.V, animated=True)
+
+    def step(arg):
+        V_img.set_data(arg)
+        return V_img,
+
+    anim = animation.FuncAnimation(fig, step, frames=sim.integrate(),
+                                   interval=20, blit=True, repeat=False)
+
+    return sim, fig, anim
+
+
+if __name__ == "__main__":
+    s, f, a = plot_2d_tissue(4)
 
 
 #  vim: set ff=unix tw=79 sw=4 ts=8 et ic ai :

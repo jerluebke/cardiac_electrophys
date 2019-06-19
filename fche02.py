@@ -19,13 +19,23 @@ def Lap2d(a, o, dx):
 
 
 class FCHE_Base:
-    def __init__(self, Vc, Vc_si, Vv, k, c,
-                 t0, td, tr, tsi, tv1, tv2, tvp, twm, twp):
+
+    def __init__(self, Vc, Vc_si, Vv, k,
+                 t0, td, tr, tsi, tv1, tv2, tvp, twm, twp,
+                 c=1., _2V_model=False):
         # set simulation params
         self.__dict__.update(dict(
             Vc=Vc, Vc_si=Vc_si, Vv=Vv, k=k, c=c, t0=t0, td=td, tr=tr, tsi=tsi,
             tv1=tv1, tv2=tv2, tvp=tvp, twm=twm, twp=twp
         ))
+
+        if _2V_model:
+            self.GV = self._GV_2V
+            self.Gw = lambda self, *unused: 0.
+        else:
+            self.GV = self._GV_3V
+            self.Gw = self._Gw
+
 
     def _I_fi(self, V, v, p):
         return -v * p * (V - self.Vc) * (1 - V) / self.td
@@ -40,15 +50,19 @@ class FCHE_Base:
         return (1 - p) * (1 - v) / ((1 - q) * self.tv1 + q * self.tv2) \
                 - p * v / self.tvp
 
-    def Gw(self, w, p):
+    def _Gw(self, w, p):
         return (1 - p) * (1 - w) / self.twm - p * w / self.twp
 
-    def GV(self, V, v, w, p):
-        return -(self._I_fi(V, v) + self._I_so(V, p) + self._I_si(V, w)) / self.c
+    def _GV_3V(self, V, v, w, p):
+        return -(self._I_fi(V, v, p) + self._I_so(V, p) + self._I_si(V, w)) / self.c
+
+    def _GV_2V(self, V, v, p):
+        return -(self._I_fi(V, v, p) + self._I_so(V, p)) / self.c
 
 
 
 class FCHE_Single_Cell(FCHE_Base):
+
     def __init__(self, V0, v0, w0, tmax, dt, **params):
         super().__init__(**params)
         self.t      = np.arange(0, tmax, dt)
@@ -58,6 +72,10 @@ class FCHE_Single_Cell(FCHE_Base):
         self.V = np.zeros_like(self.t)
         self.v = np.zeros_like(self.t)
         self.w = np.zeros_like(self.t)
+
+        self.V[0] = V0
+        self.v[0] = v0
+        self.w[0] = w0
 
 
     def integrate(self):
@@ -116,6 +134,75 @@ class FCHE_2D(FCHE_Base):
 
             if i % self.plot_interval == 0:
                 yield V
+
+
+
+PARAM_SETS = {
+    1 : dict(
+        tvp     = 3.33,
+        tv1     = 19.6,
+        tv2     = 1000.,
+        twp     = 667.,
+        twm     = 11.,
+        td      = .25,
+        t0      = 8.3,
+        tr      = 50.,
+        tsi     = 45.,
+        k       = 10.,
+        Vc_si   = .85,
+        Vc      = .13,
+        Vv      = .055
+    ),
+
+    2 : dict(
+        tvp     = 10.,
+        tv1     = 10.,
+        tv2     = 10.,
+        twp     = 0.,
+        twm     = 0.,
+        td      = .25,
+        t0      = 10.,
+        tr      = 190.,
+        tsi     = 0.,
+        k       = 0.,
+        Vc_si   = 0.,
+        Vc      = .13,
+        Vv      = 0.,
+        _2V_model = True
+    ),
+
+    3 : dict(
+        tvp     = 3.33,
+        tv1     = 19.6,
+        tv2     = 1250.,
+        twp     = 870.,
+        twm     = 41.,
+        td      = .25,
+        t0      = 12.5,
+        tr      = 33.33,
+        tsi     = 29.,
+        k       = 10.,
+        Vc_si   = .85,
+        Vc      = .13,
+        Vv      = .04
+    ),
+
+    4 : dict(
+        tvp     = 3.33,
+        tv1     = 15.6,
+        tv2     = 5.,
+        twp     = 350.,
+        twm     = 80.,
+        td      = .407,
+        t0      = 9.,
+        tr      = 34.,
+        tsi     = 26.5,
+        k       = 15.,
+        Vc_si   = .45,
+        Vc      = .15,
+        Vv      = .04
+    )
+}
 
 
 

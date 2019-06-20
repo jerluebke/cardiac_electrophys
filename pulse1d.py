@@ -23,7 +23,13 @@ def Lap1d(a, o, dx, boundary='neumann'):
 
 
 class Pulse1d(AlphaBase):
-    """class for integrating 1d tissue with aliev-panfilov model"""
+    """class for integrating 1d tissue with aliev-panfilov model
+    
+    In the case of continuous tissue, one adds a diffusion term to the
+    action potential equation:
+        dV/dt = G(V) + eta * Lap(V)
+    which causes the peak to travel spatially (see `self.integrate`)
+    """
 
     def __init__(self, xmax, dx, tmax, eta, plot_interval=50,
                  **alpha_params):

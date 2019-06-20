@@ -3,6 +3,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import animation
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 
 def Lap2d(a, o, dx):
@@ -13,7 +14,10 @@ def Lap2d(a, o, dx):
 
     # von Neumann boundary conditions
     o[0,:], o[-1,:] = o[1,:], o[-2,:]
-    o[:,0], o[:,-1] = o[:,1], o[:,-2]
+    #  o[:,0], o[:,-1] = o[:,1], o[:,-2]
+    # Dirichlet boundary conditions
+    #  o[0,:], o[-1,:] = 0., 0.
+    #  o[:,0], o[:,-1] = 0., 0.
 
     return o
 
@@ -131,7 +135,7 @@ class FCHE_2D(FCHE_Base):
             w += dt * self.Gw(w, p)
 
             if i % self.plot_interval == 0:
-                yield V
+                yield 100. * V - 80.
 
 
 
@@ -233,17 +237,24 @@ def plot_single_cell():
 
 
 def plot_2d_tissue(i):
-    sim = FCHE_2D(256, 256, 1., 10000, .3, **PARAM_SETS[i])
-    sim.V[:128,80:120] = .3
-    sim.v[:128,100:130] = 1.
-    sim.w[:128,80:120] = 1.
+    sim = FCHE_2D(64, 256, 1., 5000, .3, **PARAM_SETS[i])
+    sim.V[:,80:120]  = .3
+    sim.v[:,100:130] = 1.
+    sim.w[:,80:120]  = 1.
 
     fig, aV = plt.subplots()
+    aV.axis("off")
     aV.grid(False)
-    V_img = aV.imshow(sim.V, animated=True)
+
+    #  div = make_axes_locatable(aV)
+    #  cax = div.append_axes("bottom", "5%", "5%")
+
+    V_img = aV.imshow(sim.V, animated=True, cmap=plt.get_cmap("plasma"))
+    fig.colorbar(V_img) # , cax=cax)
 
     def step(arg):
         V_img.set_data(arg)
+        V_img.set_clim(arg.min(), arg.max())
         return V_img,
 
     anim = animation.FuncAnimation(fig, step, frames=sim.integrate(),

@@ -4,22 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import animation
 from mpl_toolkits.axes_grid1 import make_axes_locatable
-
-
-def Lap2d(a, o, dx):
-    # compute laplacian
-    o[...] = (  np.roll(a, 1, 0) + np.roll(a, -1, 0)
-              + np.roll(a, 1, 1) + np.roll(a, -1, 1)
-              - 4 * a) / dx**2
-
-    # von Neumann boundary conditions
-    o[0,:], o[-1,:] = o[1,:], o[-2,:]
-    #  o[:,0], o[:,-1] = o[:,1], o[:,-2]
-    # Dirichlet boundary conditions
-    #  o[0,:], o[-1,:] = 0., 0.
-    #  o[:,0], o[:,-1] = 0., 0.
-
-    return o
+from pulse2d import Lap2d
 
 
 
@@ -115,7 +100,7 @@ class FCHE_2D(FCHE_Base):
         self.plot_interval = plot_interval
 
 
-    def integrate(self):
+    def integrate(self, xbound='neumann', ybound='periodic'):
         # pull params and arrays to local scope
         Vc, Vv, dx, dt, eta = self.Vc, self.Vv, self.dx, self.dt, self.eta
         V, v, w, LV = self.V, self.v, self.w, self.LV
@@ -128,8 +113,7 @@ class FCHE_2D(FCHE_Base):
             p[V < Vc] = 0.
             q[V < Vv] = 0.
 
-            Lap2d(V, LV, dx)
-                  #  both='neumann')
+            Lap2d(V, LV, dx, xbound=xbound, ybound=ybound)
             V += dt * eta * LV + dt * self.GV(V, v, w, p)
             v += dt * self.Gv(v, p, q)
             w += dt * self.Gw(w, p)
@@ -236,35 +220,130 @@ def plot_single_cell():
     aV.legend()
 
 
-def plot_2d_tissue(i):
-    sim = FCHE_2D(64, 256, 1., 5000, .3, **PARAM_SETS[i])
-    sim.V[:,80:120]  = .3
-    sim.v[:,100:130] = 1.
-    sim.w[:,80:120]  = 1.
+def channel(i):
+    sim = FCHE_2D(64, 256, 1., 1000, .3, **PARAM_SETS[i])
+    sim.V[:,10:30] = .3
+    sim.v[:,20:40] = 1.
+    sim.w[:,10:30] = 1.
 
     fig, aV = plt.subplots()
     aV.axis("off")
     aV.grid(False)
-
-    #  div = make_axes_locatable(aV)
-    #  cax = div.append_axes("bottom", "5%", "5%")
+    aV.set_title('action potential - param set %d' % i)
 
     V_img = aV.imshow(sim.V, animated=True, cmap=plt.get_cmap("plasma"))
-    fig.colorbar(V_img) # , cax=cax)
+    fig.colorbar(V_img, ax=aV)
 
     def step(arg):
         V_img.set_data(arg)
         V_img.set_clim(arg.min(), arg.max())
         return V_img,
 
-    anim = animation.FuncAnimation(fig, step, frames=sim.integrate(),
+    anim = animation.FuncAnimation(fig, step,
+                                   frames=sim.integrate(xbound='dirichlet'),
                                    interval=20, blit=True, repeat=False)
 
     return sim, fig, anim
 
 
+def spiral_excitation(i, delay):
+    sim = FCHE_2D(128, 512, 1., 3000, .3, 30, **PARAM_SETS[i])
+    sim.V[:,10:30] = .3
+    sim.v[:,20:40] = 1.
+    sim.w[:,10:30] = 1.
+
+    fig, aV = plt.subplots()
+    aV.axis("off")
+    aV.grid(False)
+    aV.set_title('action potential - param set %d' % i)
+
+    div = make_axes_locatable(aV)
+    cax = div.append_axes('right', '5%', '5%')
+    cax.set_xlabel('V/mV')
+
+    V_img = aV.imshow(sim.V, animated=True, cmap=plt.get_cmap("plasma"))
+    fig.colorbar(V_img, cax=cax)
+
+    gen = sim.integrate(ybound='neumann')
+
+    def step(i):
+        if i == delay:
+            xm, ym = sim.X.shape[0] // 2, sim.X.shape[1] // 2
+            sim.V[xm-5:xm+5,ym-5:ym+5] = 1.
+
+        a = next(gen)
+        V_img.set_data(a)
+        V_img.set_clim(a.min(), a.max())
+
+        return V_img,
+
+    anim = animation.FuncAnimation(fig, step,
+                                   interval=20, blit=True, repeat=False)
+
+    return sim, fig, anim
+
+
+def spiral_wave(i):
+    sim = FCHE_2D(256, 512, 1., 5000, .3, **PARAM_SETS[i])
+    #  sim.V[59:69,:133] = .3
+    #  sim.v[64:74,:133] = 1.
+    #  sim.w[94:79,:128] = 1.
+    #  sim.V[110:140,:135] = .3
+    #  sim.v[135:155,:135] = 1.
+    #  sim.w[110:140,:130] = 1.
+    sim.V[:128,80:120]  = .3
+    sim.v[:128,100:130] = 1.
+    sim.w[:128,80:120]  = 1.
+
+    fig, aV = plt.subplots()
+    aV.axis("off")
+    aV.grid(False)
+    aV.set_title('action potential - param set %d' % i)
+
+    div = make_axes_locatable(aV)
+    cax = div.append_axes('right', '5%', '5%')
+    cax.set_xlabel('V/mV')
+
+    V_img = aV.imshow(sim.V, animated=True, cmap=plt.get_cmap("plasma"))
+    fig.colorbar(V_img, cax=cax)
+
+    def step(arg):
+        V_img.set_data(arg)
+        V_img.set_clim(arg.min(), arg.max())
+        return V_img,
+
+    FFWriter = animation.FFMpegWriter(fps=10)
+    anim = animation.FuncAnimation(fig, step,
+                                   frames=sim.integrate(ybound='neumann'),
+                                   interval=20, blit=True, repeat=False)
+    anim.save('breakup-%d.mp4' % i, writer=FFWriter, dpi=300)
+
+    return sim, fig, anim
+
+
 if __name__ == "__main__":
-    s, f, a = plot_2d_tissue(4)
+    #  s, f, a = channel(3)
+
+    # rather boring...
+    #  s, f, a = spiral_excitation(1, 32)     # plot_interval = 50
+    #  s, f, a = spiral_excitation(2, 32)     # plot_interval = 50
+    #  s, f, a = spiral_excitation(3, 66)     # plot_interval = 30
+    # this one is nice:
+    #  s, f, a = spiral_excitation(4, 80)      # plot_interval = 30
+
+    print('1...')
+    spiral_wave(1)
+    plt.close()
+    print('done.\n2...')
+    spiral_wave(2)
+    plt.close()
+    print('done.\n3...')
+    spiral_wave(3)
+    plt.close()
+    print('done.\n4...')
+    spiral_wave(4)
+    plt.close()
+    print('done.')
 
 
 #  vim: set ff=unix tw=79 sw=4 ts=8 et ic ai :

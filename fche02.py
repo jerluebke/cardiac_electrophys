@@ -284,16 +284,19 @@ def spiral_excitation(i, delay):
 
 
 def spiral_wave(i):
-    sim = FCHE_2D(256, 512, 1., 5000, .3, **PARAM_SETS[i])
+    sim = FCHE_2D(256, 512, 1., 10000, .3, **PARAM_SETS[i])
     #  sim.V[59:69,:133] = .3
     #  sim.v[64:74,:133] = 1.
     #  sim.w[94:79,:128] = 1.
     #  sim.V[110:140,:135] = .3
     #  sim.v[135:155,:135] = 1.
     #  sim.w[110:140,:130] = 1.
-    sim.V[:128,80:120]  = .3
-    sim.v[:128,100:130] = 1.
-    sim.w[:128,80:120]  = 1.
+    #  sim.V[:128,80:120]  = .3
+    #  sim.v[:128,100:130] = 1.
+    #  sim.w[:128,80:120]  = 1.
+    sim.V[80:120,:128]  = .3
+    sim.v[100:130,:128] = 1.
+    sim.w[80:120,:128]  = 1.
 
     fig, aV = plt.subplots()
     aV.axis("off")
@@ -314,9 +317,10 @@ def spiral_wave(i):
 
     FFWriter = animation.FFMpegWriter(fps=10)
     anim = animation.FuncAnimation(fig, step,
-                                   frames=sim.integrate(ybound='neumann'),
+                                   #  frames=sim.integrate(ybound='neumann'),
+                                   frames=sim.integrate(xbound='periodic'),
                                    interval=20, blit=True, repeat=False)
-    anim.save('breakup-%d.mp4' % i, writer=FFWriter, dpi=300)
+    anim.save('periodic-breakup-%d.mp4' % i, writer=FFWriter, dpi=300)
 
     return sim, fig, anim
 

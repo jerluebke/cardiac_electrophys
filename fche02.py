@@ -284,16 +284,19 @@ def spiral_excitation(i, delay):
 
 
 def spiral_wave(i):
-    sim = FCHE_2D(256, 512, 1., 5000, .3, **PARAM_SETS[i])
+    # nice results with param set 1
+    sim = FCHE_2D(512, 1024, 1., 10000, .3, **PARAM_SETS[i])
+    # check with param set 2
+    #  sim = FCHE_2D(256, 2048, 1., 10000, .3, **PARAM_SETS[i])
     #  sim.V[59:69,:133] = .3
     #  sim.v[64:74,:133] = 1.
     #  sim.w[94:79,:128] = 1.
     #  sim.V[110:140,:135] = .3
     #  sim.v[135:155,:135] = 1.
     #  sim.w[110:140,:130] = 1.
-    sim.V[:128,80:120]  = .3
-    sim.v[:128,100:130] = 1.
-    sim.w[:128,80:120]  = 1.
+    sim.V[:256,80:120]  = .3
+    sim.v[:256,100:130] = 1.
+    sim.w[:256,80:120]  = 1.
 
     fig, aV = plt.subplots()
     aV.axis("off")
@@ -312,11 +315,11 @@ def spiral_wave(i):
         V_img.set_clim(arg.min(), arg.max())
         return V_img,
 
-    FFWriter = animation.FFMpegWriter(fps=10)
+    # FFWriter = animation.FFMpegWriter(fps=10)
     anim = animation.FuncAnimation(fig, step,
                                    frames=sim.integrate(ybound='neumann'),
                                    interval=20, blit=True, repeat=False)
-    anim.save('breakup-%d.mp4' % i, writer=FFWriter, dpi=300)
+    # anim.save('breakup-%d.mp4' % i, writer=FFWriter, dpi=300)
 
     return sim, fig, anim
 
@@ -331,19 +334,22 @@ if __name__ == "__main__":
     # this one is nice:
     #  s, f, a = spiral_excitation(4, 80)      # plot_interval = 30
 
-    print('1...')
-    spiral_wave(1)
-    plt.close()
-    print('done.\n2...')
-    spiral_wave(2)
-    plt.close()
-    print('done.\n3...')
-    spiral_wave(3)
-    plt.close()
-    print('done.\n4...')
-    spiral_wave(4)
-    plt.close()
-    print('done.')
+    # print('1...')
+    # spiral_wave(1)
+    # plt.close()
+    # print('done.\n2...')
+    # spiral_wave(2)
+    # plt.close()
+    # print('done.\n3...')
+    # spiral_wave(3)
+    # plt.close()
+    # print('done.\n4...')
+    # spiral_wave(4)
+    # plt.close()
+    # print('done.')
+
+    s, f, a = spiral_wave(1)
+    plt.show()
 
 
-#  vim: set ff=unix tw=79 sw=4 ts=8 et ic ai :
+#  vim: set ff=unix tw=79 sw=4 ts=4 et ic ai :

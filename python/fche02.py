@@ -301,38 +301,7 @@ def plot_single_cell():
 def channel(i):
     """animate channel dynamics (dirichlet conditions on the sides,
     periodic conditions at start and end) for parameter set i """
-    sim = FCHE_2D(64, 256, 1., 1000, .3, **PARAM_SETS[i])
-    sim.V[:,10:30] = .3
-    sim.v[:,20:40] = 1.
-    sim.w[:,10:30] = 1.
-
-    fig, aV = plt.subplots()
-    aV.axis("off")
-    aV.grid(False)
-    aV.set_title('action potential - param set %d' % i)
-
-    V_img = aV.imshow(sim.V, animated=True, cmap=plt.get_cmap("plasma"))
-    fig.colorbar(V_img, ax=aV)
-
-    def step(arg):
-        V_img.set_data(arg)
-        V_img.set_clim(arg.min(), arg.max())
-        return V_img,
-
-    anim = animation.FuncAnimation(
-        fig, step, frames=sim.integrate(xbound='dirichlet'), interval=20,
-        blit=True, repeat=False)
-
-    return sim, fig, anim
-
-
-def spiral_excitation(i, delay):
-    """excite an AP wave in a domain with neumann conditions on all sides
-    and add a point-like excitations after delay steps
-
-    if timed correctly, this induces spiral waves in the wake of the inital
-    wave front"""
-    sim = FCHE_2D(128, 512, 1., 3000, .3, 30, **PARAM_SETS[i])
+    sim = FCHE_2D(64, 256, 1., 5000, .3, 30, **PARAM_SETS[i])
     sim.V[:,10:30] = .3
     sim.v[:,20:40] = 1.
     sim.w[:,10:30] = 1.
@@ -347,7 +316,47 @@ def spiral_excitation(i, delay):
     cax.set_xlabel('V/mV')
 
     V_img = aV.imshow(sim.V, animated=True, cmap=plt.get_cmap("plasma"))
+    V_img.set_clim(-80, 25)
     fig.colorbar(V_img, cax=cax)
+
+    def step(arg):
+        V_img.set_data(arg)
+        V_img.set_clim(arg.min(), arg.max())
+        return V_img,
+
+    #  FFWriter = animation.FFMpegWriter(fps=10)
+    anim = animation.FuncAnimation(
+        fig, step, frames=sim.integrate(xbound='dirichlet'), interval=20,
+        blit=True, repeat=False)
+    #  anim.save('channel-vid-params-%d.mp4', writer=FFWriter, dpi=300)
+
+    return sim, fig, anim
+
+
+def spiral_excitation(i, delay):
+    """excite an AP wave in a domain with neumann conditions on all sides
+    and add a point-like excitations after delay steps
+
+    if timed correctly, this induces spiral waves in the wake of the inital
+    wave front"""
+    sim = FCHE_2D(128, 512, 1., 500, .3, 30, **PARAM_SETS[i])
+    sim.V[:,10:30] = .3
+    sim.v[:,20:40] = 1.
+    sim.w[:,10:30] = 1.
+
+    fig, aV = plt.subplots()
+    aV.axis("off")
+    aV.grid(False)
+    aV.set_title('action potential - param set %d' % i)
+
+    div = make_axes_locatable(aV)
+    cax = div.append_axes('right', '5%', '5%')
+    cax.set_xlabel('V/mV')
+
+    V_img = aV.imshow(sim.V, animated=True, cmap=plt.get_cmap("plasma"))
+    V_img.set_clim(-80, 25)
+    fig.colorbar(V_img, cax=cax)
+    fig.tight_layout()
 
     gen = sim.integrate(ybound='neumann')
 
@@ -358,12 +367,16 @@ def spiral_excitation(i, delay):
 
         a = next(gen)
         V_img.set_data(a)
-        V_img.set_clim(a.min(), a.max())
+        #  V_img.set_clim(a.min(), a.max())
 
         return V_img,
 
+    #  FFWriter = animation.FFMpegWriter(fps=10)
     anim = animation.FuncAnimation(
-        fig, step, interval=20, blit=True, repeat=False)
+        fig, step, frames=sim.steps//sim.plot_interval, interval=20,
+        blit=True, repeat=False)
+    #  anim.save('spiral-excitation-vid-params%d.mp4' % i,
+    #            writer=FFWriter, dpi=300)
 
     return sim, fig, anim
 
@@ -405,15 +418,11 @@ def spiral_wave(i):
 
 
 if __name__ == "__main__":
-    #  s, f, a = channel(3)
-
-    # this one is nice:
-    #  s, f, a = spiral_excitation(4, 80)      # plot_interval = 30
-
+    #  s, f, a = channel(4)
+    #  s, f, a = spiral_excitation(4, 81)      # plot_interval = 30
     s, f, a = spiral_wave(1)
-    #  s, f, a = spiral_wave(2)
 
-    plt.show()
+    #  plt.show()
 
 
 #  vim: set ff=unix tw=79 sw=4 ts=4 et ic ai :

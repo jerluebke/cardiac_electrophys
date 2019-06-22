@@ -213,8 +213,8 @@ def spiral_wave():
 
 if __name__ == '__main__':
     #  p, f, a = channel()
-    p, f, a = spiral_excitation(23)
-    #  p, f, a = spiral_wave()
+    #  p, f, a = spiral_excitation(23)
+    p, f, a = spiral_wave()
 
 
 #  vim: set ff=unix tw=79 sw=4 ts=8 et ic ai :

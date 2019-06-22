@@ -422,7 +422,7 @@ if __name__ == "__main__":
     #  s, f, a = spiral_excitation(4, 81)      # plot_interval = 30
     s, f, a = spiral_wave(1)
 
-    #  plt.show()
+    plt.show()
 
 
 #  vim: set ff=unix tw=79 sw=4 ts=4 et ic ai :

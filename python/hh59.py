@@ -135,4 +135,7 @@ plt.legend([r'Gate $Ka^+$ $n^4$', r'Gate $Na^+$ $m^3$', r'Gate $Na^+$ $h$'],
            loc='upper right')
 
 
+plt.show()
+
+
 #  vim: set ff=unix tw=79 sw=4 ts=8 et ic ai :

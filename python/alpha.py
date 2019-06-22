@@ -160,5 +160,7 @@ if __name__ == '__main__':
     alpha = Alpha(**PARAMS)
     alpha.vary_param('m2', [.1, .3, 1., 2., 5.])
 
+    plt.show()
+
 
 #  vim: set ff=unix tw=79 sw=4 ts=8 et ic ai :

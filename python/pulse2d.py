@@ -120,8 +120,8 @@ def channel():
     aW.set_title('relaxation variable')
     ac.set_xlabel('V/mV')
 
-    V_img = aV.imshow(p.V, animated=True)
-    W_img = aW.imshow(p.V, animated=True)
+    V_img = aV.imshow(p.V, animated=True, cmap=plt.get_cmap('plasma'))
+    W_img = aW.imshow(p.V, animated=True, cmap=plt.get_cmap('plasma'))
     fig.colorbar(V_img, cax=ac)
 
     def step(a):
@@ -156,8 +156,8 @@ def spiral_excitation(delay):
     aW.set_title('relaxation variable')
     ac.set_xlabel('V/mV')
 
-    V_img = aV.imshow(p.V, animated=True)
-    W_img = aW.imshow(p.V, animated=True)
+    V_img = aV.imshow(p.V, animated=True, cmap=plt.get_cmap('plasma'))
+    W_img = aW.imshow(p.V, animated=True, cmap=plt.get_cmap('plasma'))
     fig.colorbar(V_img, cax=ac)
 
     gen = p.integrate(ybound='neumann')
@@ -194,7 +194,7 @@ def spiral_wave():
     cax = div.append_axes('right', '5%', '5%')
     cax.set_xlabel('V/mV')
 
-    V_img = aV.imshow(p.V, animated=True)
+    V_img = aV.imshow(p.V, animated=True, cmap=plt.get_cmap('plasma'))
     fig.colorbar(V_img, cax=cax)
 
     def step(a):
@@ -202,11 +202,11 @@ def spiral_wave():
         V_img.set_clim(a[0].min(), a[0].max())
         return V_img,
 
-    FFWriter = animation.FFMpegWriter(fps=30)
+    #  FFWriter = animation.FFMpegWriter(fps=30)
     anim = animation.FuncAnimation(fig, step,
                                    frames=p.integrate(ybound='neumann'),
                                    interval=20, blit=True, repeat=False)
-    anim.save('spiral.mp4', writer=FFWriter, dpi=300)
+    #  anim.save('spiral.mp4', writer=FFWriter, dpi=300)
 
     return p, fig, anim
 
@@ -215,6 +215,8 @@ if __name__ == '__main__':
     #  p, f, a = channel()
     #  p, f, a = spiral_excitation(23)
     p, f, a = spiral_wave()
+
+    plt.show()
 
 
 #  vim: set ff=unix tw=79 sw=4 ts=8 et ic ai :

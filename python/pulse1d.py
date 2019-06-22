@@ -317,5 +317,7 @@ if __name__ == '__main__':
     #  measurements_for_varying_xmax()
     fig, anim = animation_of_propagation_action_potential()
 
+    plt.show()
+
 
 #  vim: set ff=unix tw=79 sw=4 ts=8 et ic ai :

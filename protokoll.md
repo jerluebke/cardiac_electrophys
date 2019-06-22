@@ -1,12 +1,15 @@
 # Content
 1. Introduction
+    1. Cell structure
+    2. Membrane potential
 2. Three models
-    2.1 Hudgkin & Huxley (1952)
-    2.2 Aliev & Panfilov (1996)
-    2.3 Fenton et al (2002)
-3. Spatial dynamics in 1D
-4. Spatial dynamics in 2D
-5. Discussion
+    1. Hudgkin & Huxley (1952)
+    2. Aliev & Panfilov (1996)
+    3. Fenton et al (2002)
+3. Dynamics of a single cell
+4. Spatial dynamics in 1D
+5. Spatial dynamics in 2D
+6. Discussion
 A. The code
 
 
@@ -15,17 +18,21 @@ The human heart is a fascinating apparatus, which does its work in a
 constant and reliable fashion - usually without disruption - for the whole
 of a persons life. To put things into perspective, the heart of an average
 human being performs
-        70 (typical rest pulse per minute)
-    x 1440 (minutes per day)
-    x  365 (days per year)
-    x   80 (estimated average human life time)
-    ~ 3e9 beats per life time,
+```
+    70 (typical rest pulse per minute)
+x 1440 (minutes per day)
+x  365 (days per year)
+x   80 (estimated average human life time)
+~ 3e9 beats per life time,
+```
 while a typical car engine performs
-    300,000 (km driven during the cars life time)
-    / 50    (km/h, average speed)   <- cars life time in hours
-    x 60    (minutes per hour)
-    x 2,200 (revolutions per minute)
-    ~ 8e8 duty cycles per life time.
+```
+300,000 (km driven during the cars life time)
+/ 50    (km/h, average speed)   <- cars life time in hours
+x 60    (minutes per hour)
+x 2,200 (revolutions per minute)
+~ 8e8 duty cycles per life time.
+```
 
 Investigating the hearts physical working principle poses an interesting
 challenge with undoubtedly many relevant applications such as
@@ -47,7 +54,8 @@ fibres. Ultimately those action potentials cause the contraction of the
 regions of heart tissue controlled by the respective bundles of conduction
 cells.
 
-## Cell structure and membrane potential
+
+## 1.1. Cell structure
 For a better understanding it is helpful to take a closer look at the
 microscopic structure of the cardiomyocytes:
  * tubular cells containing chains of _myofibril_ (fibres composed of long
@@ -60,16 +68,215 @@ via the _gap junctions_ allow propagation of action potentials. Because of
 these features the heart muscle forms a _syncytium_, i.e. the single cells
 behave like a single coordinated unit.
 
+
+## 1.2. Membrane potential
 Now the interior and exterior (i.e. the intermediate space between
 neighbouring cells) regions of a cells exhibit different concentrations of
 various ion species (this imbalance is being maintained by special ion
 pumps and gates in the cell membrane), which results in a voltage between
-those regions: the membrane potential V=Φ\_i-Φ\_e, which in the rest case 
-is equal to the rest potential V\_rest.
+those regions: the membrane potential `V=Φ_i-Φ_e`, which in the rest case 
+is equal to the rest potential `V_rest`.
 
 > TODO: table with typical values for V\_rest
 
+If at some point the membrane potential is perturbed by a stimulus in such 
+a way that it exceeds some threshold, the ion channels rapidly open causing
+the concentration difference of the ions between interior and exterior
+cell regions to invert resulting in a large upswing of the membrane
+potential. This process is called _Depolarization_ and the peak of the
+membrane potential is called _action potential_.
 
+After reaching this peak the gates close again and the pumps recreate the
+prior concentration difference which causes the membrane potential to 
+return to the rest value (_repolarization_).
+
+Since the membrane posses a finite specific electric capacity `C_m` [F m^-2]
+the membrane potential obeys the capacitor equation:
+```
+C V = Q => dQ/dt = I = C dV/dt
+```
+
+> TODO: add circuit sketch
+
+Therewith the dynamics of `V_m` can be modeled by modeling the cross
+membrane current density `I`.
+
+
+## 1.3. Continuum description
+> TODO
+
+
+# 2. Three models
+In this section I am going to describe three approaches [(out of an 
+abundance of available models)](www.cellml.org) which can be used to
+describe the dynamics of the membrane potentials.
+
+
+## 2.1. Hudgkin & Huxley (1952)
+This model was developed by A. L. Hodgkin and A. F. Huxley to fit
+measurements taken on a giant squid axon prior to detailed knowledge about
+the biophysical mechanisms being available.
+
+The membrane current density is modeled as the sum of Sodium, Potassium and
+a leakage current, each obeying Ohm's Law:
+```
+I_m = \sum_{s}I_s = I_{Na} + I_{K} + I_{l}
+I_s = g_s (V-V_s)
+```
+> TODO: add values for V_s
+
+The specific resistivities are described by gating variables
+(dimensionless, values in (0, 1)):
+```
+g_{K} = \bar{g}_{K} n^4
+g_{Na} = \bar{g}_{Na} m^3 n
+g_{l} = \bar{g}_{l}
+```
+> TODO: add values for \bar{g}\_{s}
+
+And the gating variables obey the following ODEs:
+```
+di/dt = \alpha_{i}(1-i)-\beta_{i}i
+```
+> TODO: add \alpha\_{i}, \beta\_{i}
+
+Thus one has a system of uncoupled four 1st order ODEs (V, n, m, h) to
+solve.
+
+
+## 2.2. Aliev & Panfilov (1996)
+While the Hodkin-Huxley model gives a very good description of 
+action potential dynamics, it is rather complex and therefor not preferable
+for large scale computations.
+
+An alternative model was formulated by Aliev and Panfilov, which refrains
+from using a description based on biophysical details and instead uses two
+variables (the potential V and a relaxation variable W) to
+phenomenologically reproduce the membrane potential dynamics of
+cardiomyocytes:
+```
+dV/dt = -k V (V-a) (V-1) - V W
+dW/dt = e(V, W) (-k V (V-a-1) - W)
+e = e_0 + \frac{\mu_1 W}{V + \mu_2}
+```
+
+Here one has to solve two coupled 1st order ODEs.
+
+One can think of the relaxation variable W as summarizing and hiding all 
+the complex processes involving ion pumps etc. in order to cause the
+membrane potential to repolarize.
+
+The roles of the various parameters is investigated in Section 3.
+
+
+## 2.3. Fenton et al (2002)
+Yet another model to be introduced here is again based on the capacitor
+equation. Unlike the models presented above, this approach allows to easily
+investigate chaotic wave breakup mechanisms (its technical meaning and
+possible physiological interpretation will be presented in section ? and
+section ? respectively).
+
+The membrane current density is modeled as the sum of the following
+phenomenological current densities:
+* fast inward current
+
+    I_fi = -v * Θ(V-Vc) * (V-Vc) * (1-V) / td
+
+    * depolarizes membrane upon an excitation above Vc
+    * depends on fast activation gate Θ(V-Vc) and fast inactivation gate v
+
+* slow outward current
+
+    I_so = V * (1-Θ(V-Vc)) / t0 + Θ(V-Vc) / tr
+
+    * repolarizes membrane back to resting potential
+    * depends on fast activation gate Θ(V-Vc)
+
+* slow inward current
+
+    I_si = -w * d / (2 * tsi),  d -> 1 + tanh(k * (V-Vc_si))
+
+    * inactivation current to balance I_so and to produce the observe
+      plateau in the action potential
+    * depends on the slow inactivation gate w and on the very fast
+      activation gate d, which is modeled by a steady-state function
+
+The two gate variables governing the currents:
+* fast inactivation gate
+
+    dv/dt = (1-Θ(V-Vc)) * (1-v) / tvm - Θ(V-Vc) * v / tvp,
+    tvm = (1-Θ(V-Vv)) * tvm1 + Θ(V-Vv) * tvm2
+
+* slow inactivation gate
+
+    dw/dt = (1-Θ(V-Vc)) * (1-w) / twm - Θ(V-Vc) * w / twp
+
+
+And the parameters:
+* tvp, tvm1, tvm2: opening ([p]lus) and closing ([m]inus) times of the
+fast variable v
+* twp. twm: opening and closing times of the slow variable w
+* td, tr: de- and repolarization times
+* t0, tsi: time constants for slow currents
+* Vc, Vv, Vc_si: voltage thresholds
+* k: activation width parameter
+
+The problem to be solved in this description composes of three uncoupled 
+1st order ODEs (V, v, w).
+
+
+# 3. Dynamics of a single cell
+
+## 3.1. Hodgkin-Huxley
+<!--
+TODO:
+ * describe and compare action potential plot for ~10ms
+ * describe gating variables and currents
+ * add source current
+-->
+
+
+## 3.2. Aliev-Panfilov
+<!--
+TODO:
+ * describe dynamics of V and W using phase plot and time development
+ * study and describe effects of variations of parameters
+-->
+
+## 3.3. Fenton et al
+<!--
+TODO:
+ * describe dynamics of action potential, gating variables and currents
+   (for one parameter set)
+ * try comparing action potential with above models
+-->
+
+
+# 4. Spatial dynamics in 1D
+<!--
+TODO:
+discuss measurements taken with Aliev-Panfilov model
+-->
+
+
+# 5. Spatial dynamics in 2D
+<!--
+TODO: (using Aliev-Panfilov and Fenton)
+ * channel
+ * spiral excitation
+ * spiral wave and breakup
+-->
+
+
+# 6. Discussion
+
+
+# A. Appendix
+<!--
+TODO:
+ * briefly explain code structure
+ * usage instructions
+-->
 
 
 >  vim: set ff=unix tw=79 sw=4 ts=4 et ic ai : 

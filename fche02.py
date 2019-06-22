@@ -1,4 +1,53 @@
 # -*- coding: utf-8 -*-
+"""Phenomenological ionic model used by Fenton, Cherry, Hastings and Evans
+in 'Multiple mechanisms of spiral wave breakup in a model of cardiac
+electrical activity' (2002); here referred to as 'FCHE02'.
+
+Similar to the Hodgkin-Huxley model the membrane potential is said to obey
+the cable equation:
+    c * dV_m/dt = -I_m
+    I_m = I_fi + I_so + I_si
+
+The components of the membran current I_m:
+    * fast inward current
+        I_fi = -v * Θ(V-Vc) * (V-Vc) * (1-V) / td
+
+     ** depolarizes membrane upon an excitation above Vc
+     ** depends on fast activation gate Θ(V-Vc) and fast inactivation gate v
+
+    * slow outward current
+        I_so = V * (1-Θ(V-Vc)) / t0 + Θ(V-Vc) / tr
+
+     ** repolarizes membrane back to resting potential
+     ** depends on fast activation gate Θ(V-Vc)
+
+    * slow inward current
+        I_si = -w * d / (2 * tsi),  d -> 1 + tanh(k * (V-Vc_si))
+
+     ** inactivation current to balance I_so and to produce the observed
+     plateau in the action potential
+     ** depends on the slow inactivation gate w and on the very fast
+     activation gate d, which is modeled by a steady-state function
+
+
+The two gate variables governing the currents:
+    * fast inactivation gate
+        dv/dt = (1-Θ(V-Vc)) * (1-v) / tvm - Θ(V-Vc) * v / tvp,
+            tvm = (1-Θ(V-Vv)) * tvm1 + Θ(V-Vv) * tvm2
+
+    * slow inactivation gate
+        dw/dt = (1-Θ(V-Vc)) * (1-w) / twm - Θ(V-Vc) * w / twp
+
+
+Parameters:
+    * tvp, tvm1, tvm2: opening ([p]lus) and closing ([m]inus) times of the
+    fast variable v
+    * twp. twm: opening and closing times of the slow variable w
+    * td, tr: de- and repolarization times
+    * t0, tsi: time constants for slow currents
+    * Vc, Vv, Vc_si: voltage thresholds
+    * k: activation width parameter
+"""
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -9,10 +58,16 @@ from pulse2d import Lap2d
 
 
 class FCHE_Base:
+    """Base class for FCHE simulations to manage the necessary parameters"""
 
     def __init__(self, Vc, Vc_si, Vv, k,
                  t0, td, tr, tsi, tv1, tv2, tvp, twm, twp,
                  c=1., _2V_model=False):
+        """Description of parameters: see module docstring
+
+        _2V_model: if True, ignore slow inward current I_si and reduce
+            model from three to two variables
+        """
         # set simulation params
         self.__dict__.update(dict(
             Vc=Vc, Vc_si=Vc_si, Vv=Vv, k=k, c=c, t0=t0, td=td, tr=tr, tsi=tsi,
@@ -52,8 +107,12 @@ class FCHE_Base:
 
 
 class FCHE_Single_Cell(FCHE_Base):
+    """Class to examine behaviour of the action potential of a single
+    cell"""
 
     def __init__(self, V0, v0, w0, tmax, dt, **params):
+        """Set initial values for V, v and w; define tmax and integration
+        time step"""
         super().__init__(**params)
         self.t      = np.arange(0, tmax, dt)
         self.dt     = dt
@@ -69,6 +128,7 @@ class FCHE_Single_Cell(FCHE_Base):
 
 
     def integrate(self):
+        """integrate system with a simple Euler step"""
         V, v, w = self.V, self.v, self.w
 
         for i in range(self.steps-1):
@@ -81,13 +141,20 @@ class FCHE_Single_Cell(FCHE_Base):
 
 
 class FCHE_2D(FCHE_Base):
+    """Class to apply the FCHE model for 2D tissue simulations"""
 
     def __init__(self, xmax, ymax, dx, tmax, eta,
                  plot_interval=50, **params):
+        """Define shape of tissue with xmax, ymax; set tmax; compute dt
+        from dx and eta in order to fulfill the cfl condition, i.e.:
+            dt < dx**2 / (2*eta)
+
+        Yield intermediate result every plot_interval steps for plotting
+        """
         super().__init__(**params)
 
         self.dx     = dx                        # lattice constant
-        self.eta    = eta                       # diffusity
+        self.eta    = eta                       # diffusivity
         self.dt     = .2 * dx**2 / (2. * eta)   # cfl condition
         self.steps  = int(tmax // self.dt + 1)
 
@@ -101,6 +168,12 @@ class FCHE_2D(FCHE_Base):
 
 
     def integrate(self, xbound='neumann', ybound='periodic'):
+        """Integrate system using a simple Euler step
+
+        In order to consider spatial dynamics, the cable equation governing
+        V_m is expanded with a diffusion term:
+            c*dV_m/dt = eta * Lap(V_m) + I_m
+        """
         # pull params and arrays to local scope
         Vc, Vv, dx, dt, eta = self.Vc, self.Vv, self.dx, self.dt, self.eta
         V, v, w, LV = self.V, self.v, self.w, self.LV
@@ -122,6 +195,8 @@ class FCHE_2D(FCHE_Base):
                 yield 100. * V - 80.
 
 
+
+# predefined parameters, taken from the FCHE paper
 
 PARAM_SETS = {
     1 : dict(
@@ -193,6 +268,9 @@ PARAM_SETS = {
 
 
 def plot_single_cell():
+    """for a single cell, plot temporal profile of action potential, fast
+    and slow variable and the currents for all four predefined parameter
+    sets"""
     fig, ((aV, av, aw), (aIfi, aIsi, aIso)) = plt.subplots(2, 3)
 
     aV.set(title='action potential', xlabel='t/ms', ylabel='V/mV')
@@ -221,6 +299,8 @@ def plot_single_cell():
 
 
 def channel(i):
+    """animate channel dynamics (dirichlet conditions on the sides,
+    periodic conditions at start and end) for parameter set i """
     sim = FCHE_2D(64, 256, 1., 1000, .3, **PARAM_SETS[i])
     sim.V[:,10:30] = .3
     sim.v[:,20:40] = 1.
@@ -239,14 +319,19 @@ def channel(i):
         V_img.set_clim(arg.min(), arg.max())
         return V_img,
 
-    anim = animation.FuncAnimation(fig, step,
-                                   frames=sim.integrate(xbound='dirichlet'),
-                                   interval=20, blit=True, repeat=False)
+    anim = animation.FuncAnimation(
+        fig, step, frames=sim.integrate(xbound='dirichlet'), interval=20,
+        blit=True, repeat=False)
 
     return sim, fig, anim
 
 
 def spiral_excitation(i, delay):
+    """excite an AP wave in a domain with neumann conditions on all sides
+    and add a point-like excitations after delay steps
+
+    if timed correctly, this induces spiral waves in the wake of the inital
+    wave front"""
     sim = FCHE_2D(128, 512, 1., 3000, .3, 30, **PARAM_SETS[i])
     sim.V[:,10:30] = .3
     sim.v[:,20:40] = 1.
@@ -277,26 +362,18 @@ def spiral_excitation(i, delay):
 
         return V_img,
 
-    anim = animation.FuncAnimation(fig, step,
-                                   interval=20, blit=True, repeat=False)
+    anim = animation.FuncAnimation(
+        fig, step, interval=20, blit=True, repeat=False)
 
     return sim, fig, anim
 
 
 def spiral_wave(i):
     # nice results with param set 1
-    sim = FCHE_2D(512, 1024, 1., 10000, .3, **PARAM_SETS[i])
-    # check with param set 2
-    #  sim = FCHE_2D(256, 2048, 1., 10000, .3, **PARAM_SETS[i])
-    #  sim.V[59:69,:133] = .3
-    #  sim.v[64:74,:133] = 1.
-    #  sim.w[94:79,:128] = 1.
-    #  sim.V[110:140,:135] = .3
-    #  sim.v[135:155,:135] = 1.
-    #  sim.w[110:140,:130] = 1.
-    sim.V[:256,80:120]  = .3
-    sim.v[:256,100:130] = 1.
-    sim.w[:256,80:120]  = 1.
+    sim = FCHE_2D(256, 512, 1., 10_000, .3, **PARAM_SETS[i])
+    sim.V[80:120,:128]  = .3
+    sim.v[100:130,:128] = 1.
+    sim.w[80:120,:128]  = 1.
 
     fig, aV = plt.subplots()
     aV.axis("off")
@@ -307,30 +384,22 @@ def spiral_wave(i):
     cax = div.append_axes('right', '5%', '5%')
     cax.set_xlabel('V/mV')
 
-
-    fig, aV = plt.subplots()
-    aV.axis("off")
-    aV.grid(False)
-    aV.set_title('action potential - param set %d' % i)
-
-    div = make_axes_locatable(aV)
-    cax = div.append_axes('right', '5%', '5%')
-    cax.set_xlabel('V/mV')
-
-    V_img = aV.imshow(sim.V, animated=True, cmap=plt.get_cmap("plasma"))
+    V_img = aV.imshow(sim.V, animated=True, cmap=plt.get_cmap('plasma'))
+    V_img.set_clim(-80, 25)
     fig.colorbar(V_img, cax=cax)
 
     def step(arg):
         V_img.set_data(arg)
-        V_img.set_clim(arg.min(), arg.max())
         return V_img,
 
-    # FFWriter = animation.FFMpegWriter(fps=10)
-    anim = animation.FuncAnimation(fig, step,
-                                   #  frames=sim.integrate(ybound='neumann'),
-                                   frames=sim.integrate(xbound='periodic'),
-                                   interval=20, blit=True, repeat=False)
-    anim.save('periodic-breakup-%d.mp4' % i, writer=FFWriter, dpi=300)
+    #  FFWriter = animation.FFMpegWriter(fps=10)
+    anim = animation.FuncAnimation(
+        fig, step,
+        frames=sim.integrate(ybound='neumann'),
+        #  frames=sim.integrate(xbound='periodic'),
+        interval=20, blit=True, # repeat=False,
+        cache_frame_data=False)
+    #  anim.save('breakup-%d-04.mp4' % i, writer=FFWriter, dpi=300)
 
     return sim, fig, anim
 
@@ -338,28 +407,12 @@ def spiral_wave(i):
 if __name__ == "__main__":
     #  s, f, a = channel(3)
 
-    # rather boring...
-    #  s, f, a = spiral_excitation(1, 32)     # plot_interval = 50
-    #  s, f, a = spiral_excitation(2, 32)     # plot_interval = 50
-    #  s, f, a = spiral_excitation(3, 66)     # plot_interval = 30
     # this one is nice:
     #  s, f, a = spiral_excitation(4, 80)      # plot_interval = 30
 
-    # print('1...')
-    # spiral_wave(1)
-    # plt.close()
-    # print('done.\n2...')
-    # spiral_wave(2)
-    # plt.close()
-    # print('done.\n3...')
-    # spiral_wave(3)
-    # plt.close()
-    # print('done.\n4...')
-    # spiral_wave(4)
-    # plt.close()
-    # print('done.')
-
     s, f, a = spiral_wave(1)
+    #  s, f, a = spiral_wave(2)
+
     plt.show()
 
 

@@ -2,6 +2,7 @@
 1. Introduction
     1. Cell structure
     2. Membrane potential
+    3. Continuum description
 2. Three models
     1. Hudgkin & Huxley (1952)
     2. Aliev & Panfilov (1996)
@@ -10,7 +11,8 @@
 4. Spatial dynamics in 1D
 5. Spatial dynamics in 2D
 6. Discussion
-A. The code
+A. Aliev & Panfilov: Parameter variation  
+B. The code  
 
 
 # 1. Introduction
@@ -103,7 +105,73 @@ membrane current density `I`.
 
 
 ## 1.3. Continuum description
-> TODO
+At a microscopic level the propagation of action potential is a discrete
+process (from cell to cell). However looking at tissue at sufficiently 
+large scales, it can be viewed as continuous (-> functional syncytium). It 
+is important to note the anisotropic nature of this process: the tissue
+exhibits different conductivities in longitudinal and transversal direction
+with respect to the myofibril.
+
+### 1.3.1. Bidomain model
+One formulates potentials and current densities for the intra- and
+extracellular regions: `Φ_i, Φ_e, J_i, J_e`
+It is important to note, that formally all of these functions are defined 
+on the whole domain.
+
+To set them into relation, consider Poisson's equation and Ohm's Law:
+```
+E=-∇Φ, J=GE=-G∇Φ
+=> J_i=-G_i ∇Φ_i, J_e=-G_e ∇Φ_e
+```
+where E is the electrical field associated with the potential Φ and G is 
+the conductivity tensor accounting for the anisotropy.
+Imposing conservation of current:
+```
+∇\dot(J_i + J_e)=0 => -∇\dot{J_i}=∇\dot{J_e}=I_m
+```
+where `I_m` is the transmembrane current density (units A m^-3).
+From the capacitor equation
+```
+I_m=\beta(CdV\dt+\sum_{s}I_s), V=Φ_i-Φ_e
+```
+(where `\beta` is a scaling constant with units m^-1) one finds:
+> TODO: add equations
+
+Now one has a system of two coupled PDEs with (i) being parabolic and (ii)
+being elliptic, which is rather difficult to solve.
+
+## 1.3.2. Monodomain model
+In order to make matters more accessible one makes the assumption that the
+intra- and extracellular anisotropies are identical, i.e. the respective
+conductivities are proportional:
+```
+G_e=\lambda G_i
+=> ... =>
+dV/dt=∇\dot{D}∇V-1/C\sum_{s}I_s,    D=G/(C\beta)
+```
+which reduces the problem to one parabolic PDE (a diffusion equation).
+
+Now all that is left to do is to model the conductivity tensor `D` to
+represent the tissue at hand.
+
+One way of doing this is to split this object
+into components parallel and perpendicular to the direction of the 
+myofibril \vec{f}, like so
+```
+D=D_{\perp} I + (D_{\parallel}-D_{\perp}) \vec{f}\vec{f}^{T}
+```
+where for typical cardiomyocytes one has the relation
+`D_{\parallel}/D_{\perp}~2...10`.
+
+Another way is to neglect the anisotropies all together and write the
+conductivity tensor as a scalar value: `D -> η`. This is the approach
+taken by the following investigations.
+
+
+_Note_: Without external stimuli (enforced by von Neumann boundary
+conditions) bi- and monodomain models yield almost identical results.
+However when considering such external stimuli (e.g. defibrillation) the
+unequal anisotropies of intra- and extracellular regions are significant. 
 
 
 # 2. Three models
@@ -166,8 +234,6 @@ One can think of the relaxation variable W as summarizing and hiding all
 the complex processes involving ion pumps etc. in order to cause the
 membrane potential to repolarize.
 
-The roles of the various parameters is investigated in Section 3.
-
 
 ## 2.3. Fenton et al (2002)
 Yet another model to be introduced here is again based on the capacitor
@@ -226,30 +292,98 @@ The problem to be solved in this description composes of three uncoupled
 
 
 # 3. Dynamics of a single cell
+In this section the results of the numerical solutions for a single cell
+using the three models presented above are discussed. All results were
+obtained with a simple Forward-Euler scheme.
 
 ## 3.1. Hodgkin-Huxley
-<!--
-TODO:
- * describe and compare action potential plot for ~10ms
- * describe gating variables and currents
- * add source current
--->
+The equations where integrated for 10 ms with a time step Δt=0.01 ms (i.e.
+1000 integration steps) and an initial potential of `V_0=-7mV`.
+
+> TODO: insert hh52-10ms.png
+
+The gating variables were initially all set to 0, yet at t=0ms the Na^+ h
+gate is already ~80% open (but the Na^+ current is being suppressed by the
+closed m gate). The h gate slowly closes up to t=5ms and then swings down
+more rapidly, while at the same time the m gate opens strongly and allows
+the influx of Na^+ ions (interestingly the Na^+ current exhibits a small
+seperate peak at t~5ms before rising up to its full strength). This causes
+the membrane potential to rise up and become strongly positive.
+Shortly after the quick opening of the m gate, the Ka^+ n gate also opens
+allowing for an opposed Ka^+ outflux causing the membrane potential to
+eventually repolarize.
+
+The resulting action potential resembles qualitatively the results depicted
+in Fig. 12 in [HH52]. An even more fit is achieved when integrating the
+system for 40 ms with an initial value `V_0=-30 mV`, as depicted in Fig. 22
+in [HH52].
+
+> TODO: insert hh52-40ms.png
+
+Another interesting effect can be observed when adding an additional source
+current to equation (?), i.e.
+```
+CdV/dt = -\sum_{s}I_s + I_{source}
+```
+which causes the membrane potential to depolarize again after
+repolarization with a constant rate.
+
+> TODO: insert hh52-40ms-10nA
 
 
 ## 3.2. Aliev-Panfilov
-<!--
-TODO:
- * describe dynamics of V and W using phase plot and time development
- * study and describe effects of variations of parameters
--->
+_Note:_ The action potential V in this model takes values in (0, 1) and
+needs to be rescaled according to `V_phys/mV=100*V-80` and `t_phys/ms=12.9*t`
+
+The integration was performed for 60 model time units (t\_{phys,max}=774 ms)
+with a time step of Δt=0.01 model time units (i.e. 6000 integration steps)
+and an initial excitement of the action potential to V\_0=0.2 model voltage
+units (V\_{phys,0}=-60 mV).
+
+Upon an excitement which surpasses some threshold the action potential
+quickly raises up to its maximal value. The relaxation variable begins
+raising, too, slowly at first, but gradually growing faster until it 
+steeply reaches its peak, which pulls the action potential back to its rest
+value.
+
+> TODO: add alpha-phase+dynamics.png
+The phaseplot to the right shows the characteristic connection of the two
+variables (unscaled).
+The plot to the left shows the temporal evolution of the two variables
+(scaled)
+
+The models dynamics are governed by a set of five parameters a, k, ε\_0,
+μ\_1 and μ\_2. These are phenomenological in their nature and therefor
+difficult to interpret. A short study which varies each parameter while
+holding the others constant is found in the appendix.
+
 
 ## 3.3. Fenton et al
-<!--
-TODO:
- * describe dynamics of action potential, gating variables and currents
-   (for one parameter set)
- * try comparing action potential with above models
--->
+_Note:_ In this model the action potential also takes values in (0, 1) and
+needs to be rescaled with `V_phys=(100*V-80)/mV`, however the time closely
+resembles the physical time.
+
+The integration was performed for 400 ms, using a time step Δt=0.1 ms
+(resulting in 4000 integration steps) and an initial excitement of the
+membrane potential V\_0=0.3 model voltage units (V\_{phys,0}=-50 mV).
+
+The resulting action potential qualitatively resembles the result from the
+Aliev-Panfilov model, with the difference that the peak does not start
+decreasing right after the excitement but rather shows a slight bump in the
+plateau.
+Just like the Hodgkin-Huxley model, the Fenton model is based on an ionic
+description, which allows to comprehend the action potential dynamics based
+on underlying gate and current processes.
+
+> TODO: insert fenton-single-cell.png
+
+Here are two things to note here:
+ * the gate variables are _inactivation gates_, i.e. 1 means fully closed,
+   while 0 means fully opened.
+ * the currents are modeled with Heaviside-functions in order to be
+   activated when the potential surpasses a certain threshold (defined by
+   the model parameters V\_c and V\_v); this causes the sudden jumps in the
+   current plots.
 
 
 # 4. Spatial dynamics in 1D
@@ -269,6 +403,33 @@ TODO: (using Aliev-Panfilov and Fenton)
 
 
 # 6. Discussion
+## 6.1. The Models
+### 6.1.1. Hodgkin & Huxley
+ * very intuitive model
+ * close to the physics, even though the details were unknown at that time
+    * gives a good understanding about what is going on
+    * even hyperpolarization is included
+ * time step used in integration: Δt=0.01ms, reasonable were obtained with
+   Δt=0.055ms, but at this point the results already included artifacts due
+   to numerical uncertainties
+    * better results with larger time steps could be obtained with a
+      different integrator (see below)
+
+### 6.1.2. Aliev & Panfilov
+ * difficult to interpret
+ * not very close to the underlying physics
+ * but...
+
+### 6.1.3. Fenton et al
+ * a phenomenological model, yet the quantities (_currents_ and _gates_)
+   resemble the physics closely
+ * Parameters have physical meaning and are designed in such a way that
+   allows to influence the models behaviour purposefully
+...
+ * rather complex compared to Aliev & Panfilov; tissue simulations take
+   subjectively longer
+
+## 6.2. The Method
 
 
 # A. Appendix

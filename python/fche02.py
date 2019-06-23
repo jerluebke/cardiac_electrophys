@@ -276,12 +276,15 @@ def plot_single_cell():
     aV.set(title='action potential', xlabel='t/ms', ylabel='V/mV')
     av.set(title='fast gate variable', xlabel='t/ms')
     aw.set(title='slow gate variable', xlabel='t/ms')
-    aIfi.set(title='fast inward current', xlabel='t/ms')
-    aIsi.set(title='slow inward current', xlabel='t/ms')
-    aIso.set(title='slow outward current', xlabel='t/ms')
+    aIfi.set(title='fast inward current', xlabel='t/ms',
+             ylabel=r'I/Am$^-2$')
+    aIsi.set(title='slow inward current', xlabel='t/ms',
+             ylabel=r'I/Am$^-2$')
+    aIso.set(title='slow outward current', xlabel='t/ms',
+             ylabel=r'I/Am$^-2$')
 
     for i in PARAM_SETS.keys():
-        sim = FCHE_Single_Cell(.3, 1., 1., 400, .01, **PARAM_SETS[i])
+        sim = FCHE_Single_Cell(.3, 1., 1., 400, .1, **PARAM_SETS[i])
         sim.integrate()
 
         p = np.ones_like(sim.V)
@@ -418,9 +421,11 @@ def spiral_wave(i):
 
 
 if __name__ == "__main__":
+    plot_single_cell()
+
     #  s, f, a = channel(4)
     #  s, f, a = spiral_excitation(4, 81)      # plot_interval = 30
-    s, f, a = spiral_wave(1)
+    #  s, f, a = spiral_wave(1)
 
     plt.show()
 

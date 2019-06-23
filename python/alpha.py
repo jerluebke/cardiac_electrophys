@@ -117,18 +117,20 @@ class Alpha(AlphaBase):
         results, in order to get an understanding of how the given parameter
         influences the dynamics of the system
         """
+        key_dict = {'a' : 'a', 'k' : 'k', r'\epsilon_0' : 'e0',
+                    r'\mu_1' : 'm1', r'\mu_2' : 'm2'}
         colors = plt.get_cmap('Dark2').colors
         for val, color in zip(val_list, colors):
-            setattr(self, key, val)
+            setattr(self, key_dict[key], val)
             self.integrate()
             self.phaseplot.plot(self.VW[0], self.VW[1],
                                 color=color,
-                                label='%s=%s' % (key, val))
+                                label=r'$%s=%s$' % (key, val))
             self.timeplot.plot(12.9*self.t, 100*self.VW[0]-80,
                                color=color)
             self.timeplot.plot(12.9*self.t, 100*self.VW[1]-80,
                                color=color,
-                               label='%s=%s' % (key, val))
+                               label=r'$%s=%s$' % (key, val))
         self.phaseplot.legend(loc='upper right')
         self.timeplot.legend(loc='upper right')
 
@@ -147,18 +149,18 @@ if __name__ == '__main__':
 
     alpha = Alpha(**PARAMS)
     alpha.vary_param('a', [.1, .125, .15, .175, .199, .2])
-
+    
     alpha = Alpha(**PARAMS)
     alpha.vary_param('k', [4., 6., 8., 10., 12., 14.])
-
+    
     alpha = Alpha(**PARAMS)
-    alpha.vary_param('e0', [1e-5, 1e-4, 2e-3, 1e-1, 1.])
-
+    alpha.vary_param('\epsilon_0', [1e-5, 1e-4, 2e-3, 1e-1, 1.])
+    
     alpha = Alpha(**PARAMS)
-    alpha.vary_param('m1', [.05, .1, .2, .5, 1., 2.])
-
+    alpha.vary_param('\mu_1', [.05, .1, .2, .5, 1., 2.])
+    
     alpha = Alpha(**PARAMS)
-    alpha.vary_param('m2', [.1, .3, 1., 2., 5.])
+    alpha.vary_param('\mu_2', [.1, .3, 1., 2., 5.])
 
     plt.show()
 

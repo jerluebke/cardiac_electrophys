@@ -88,7 +88,7 @@ steps   = t.size
 #  Ip      = np.zeros_like(t)
 #  Ip[int(20./dt):int(80./dt)] += 10.
 Ip      = 10.*np.ones_like(t)
-V_0 = -7.
+V_0 = -30.
 
 # initialize result arrays
 V = np.zeros(steps)
@@ -110,32 +110,44 @@ for i in range(steps-1):
 
 
 # plotting
-plt.figure()
-plt.subplot(131,
-            title='Potential',
-            xlabel=r'$t/ms$', ylabel=r'$V/mV$')
-plt.plot(t, V)
 
-plt.subplot(132,
-            title='Current Densities',
-            xlabel=r'$t/ms$', ylabel=r'$I/Am^{-2}$')
-plt.plot(t, I_K(V, n),
-         t, I_Na(V, m, h),
-         t, I_l(V))
-plt.legend([r'$I Ka^+$', r'$I Na^+$', r'$I$ leak'],
-           loc='upper right')
+def plot_all():
+    plt.figure()
+    plt.subplot(131,
+                title='Potential',
+                xlabel=r'$t/ms$', ylabel=r'$V/mV$')
+    plt.plot(t, V)
 
-plt.subplot(133,
-            title='Gating Variables',
-            xlabel=r'$t/ms$', ylabel='Gating Variables')
-plt.plot(t, n**4,
-         t, m**3,
-         t, h)
-plt.legend([r'Gate $Ka^+$ $n^4$', r'Gate $Na^+$ $m^3$', r'Gate $Na^+$ $h$'],
-           loc='upper right')
+    plt.subplot(132,
+                title='Current Densities',
+                xlabel=r'$t/ms$', ylabel=r'$I/Am^{-2}$')
+    plt.plot(t, I_K(V, n),
+             t, I_Na(V, m, h),
+             t, I_l(V))
+    plt.legend([r'I Ka$^+$', r'I Na$^+$', r'I leak'],
+               loc='upper left')
+
+    plt.subplot(133,
+                title='Gating Variables',
+                xlabel=r'$t/ms$', ylabel='Gating Variables')
+    plt.plot(t, n**4,
+             t, m**3,
+             t, h)
+    plt.legend([r'Gate Ka$^+$ $n^4$', r'Gate Na$^+$ $m^3$', r'Gate Na$^+$ $h$'],
+               loc='upper left')
 
 
-plt.show()
+def plot_ap():
+    plt.figure()
+    plt.subplot(111, title='Potential',
+                xlabel=r'$t/ms$', ylabel=r'$V/mV$')
+    plt.plot(t, V)
+
+
+if __name__ == '__main__':
+    #  plot_all()
+    plot_ap()
+    plt.show()
 
 
 #  vim: set ff=unix tw=79 sw=4 ts=8 et ic ai :

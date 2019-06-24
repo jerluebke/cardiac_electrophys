@@ -70,10 +70,10 @@ class Pulse1d(AlphaBase):
 
         # variables for measuring (see `self._take_measurement` for details)
         self.measurements   = None
-        self.nom            =   0   # number of recorded measurements
-        self.threshold_low  =    .05
-        self.threshold_high =    .95
-        self.previous_V     =   0.
+        self.nom            = 0     # number of recorded measurements
+        self.threshold_low  = .05
+        self.threshold_high = .95
+        self.previous_V     = 0.
         self.uptime         = -10.
 
 
@@ -255,7 +255,7 @@ def measurements_for_varying_xmax():
 
     xmax = np.array([25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100, 150, 200])
     iterations_until_equilibrium = \
-            np.array([5, 4, 4, 3, 3, 2, 2, 2, 2, 2, 1, 1, 1])
+            np.array([5, 4, 4, 3, 3, 2, 2, 2, 2, 2, 2, 1, 1])
     measurement_dict = \
             collect_measurements('xmax', xmax, tmax=3000, nom=10,
                                  discard_list=iterations_until_equilibrium)
@@ -284,9 +284,11 @@ def measurements_for_varying_xmax():
     ax.plot(rt_lin, cv_th(rt_lin), label='Theoretical Estimate')
     ax.legend()
 
+    return measurement_dict
 
 
-def animation_of_propagation_action_potential():
+
+def animation_of_propagating_action_potential():
     print('\n\n\nPLOTTING ACTION POTENTIAL PROPAGATION\n')
 
     params = dict(a=.15, k=8., e0=2e-3, m1=.2, m2=.3)
@@ -314,8 +316,8 @@ def animation_of_propagation_action_potential():
 
 
 if __name__ == '__main__':
-    #  measurements_for_varying_xmax()
-    fig, anim = animation_of_propagation_action_potential()
+    md = measurements_for_varying_xmax()
+    #  fig, anim = animation_of_propagating_action_potential()
 
     plt.show()
 

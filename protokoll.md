@@ -8,11 +8,13 @@
     2. Aliev & Panfilov (1996)
     3. Fenton et al (2002)
 3. Dynamics of a single cell
-4. Spatial dynamics in 1D
-5. Spatial dynamics in 2D
-6. Discussion
-A. Aliev & Panfilov: Parameter variation  
-B. The code  
+4. Spatial Dynamics
+    1. In 1D
+    2. In 2D
+5. Discussion  
+A. Appendix
+    1. Aliev & Panfilov: Parameter variation  
+    2. The code  
 
 
 # 1. Introduction
@@ -303,11 +305,11 @@ The equations where integrated for 10 ms with a time step Δt=0.01 ms (i.e.
 > TODO: insert hh52-10ms.png
 
 The gating variables were initially all set to 0, yet at t=0ms the Na^+ h
-gate is already ~80% open (but the Na^+ current is being suppressed by the
+gate is already \~80% open (but the Na^+ current is being suppressed by the
 closed m gate). The h gate slowly closes up to t=5ms and then swings down
 more rapidly, while at the same time the m gate opens strongly and allows
 the influx of Na^+ ions (interestingly the Na^+ current exhibits a small
-seperate peak at t~5ms before rising up to its full strength). This causes
+seperate peak at t\~5ms before rising up to its full strength). This causes
 the membrane potential to rise up and become strongly positive.
 Shortly after the quick opening of the m gate, the Ka^+ n gate also opens
 allowing for an opposed Ka^+ outflux causing the membrane potential to
@@ -386,16 +388,104 @@ Here are two things to note here:
    current plots.
 
 
-# 4. Spatial dynamics in 1D
-<!--
-TODO:
-discuss measurements taken with Aliev-Panfilov model
--->
+# 4. Continuous Spatial Dynamics
+The spatial tissue simulations discussed in this section are based on a
+continuous approximation of the tissue, which in truth is composed of discrete
+cells. The mathematical approach was introduced in section (1.3). In practice -
+regardless of the concrete model used - one adds a diffusion term to the ODE
+describing the temporal evolution of the membrane potential and obtains a
+parabolic PDE:
+```
+dV/dt=G(V) --> dV/dt=ηΔV+G(V)
+```
+In this case the - normally anisotropic - diffusivity is given
+by the scalar coefficient η, which has been set to η=0.3 in all cases presented
+below.
+Additionally, the time step is computed to fulfill the CFL condition:
+```
+Δt<Δx^2/(2η)
+```
+
+## 4.1. In 1D
+The simulation is performed using the Aliev-Panfilov model. The calculations
+are performed with two one-dimensional arrays representing the values of the
+membrane potential and the relaxation variable along a discretized line,
+whose length has been varied throughout the simulations while holding the
+grid spacing constant at Δx=0.2.
+
+At the beginning von-Neumann boundary conditions are imposed and the first
+value of the potential array is set to one. Then at each time step both
+arrays are updated using a simple Euler-step according to
+```
+dV/dt=ηΔV+G(V, W)
+dW/dt=G(V, W)
+```
+where G(V, W) is the right hand side in equation (?).
+
+After sufficient steps for the peak of the action potential to develop, the
+von-Neumann boundary conditions are replaced by periodic boundary
+conditions, which mimics a regular succession of peaks at a constant rate.
+This rate can be modified by changing the length of the line along which the
+values are computed.
+
+Now, when performing the simulation for different lengths, one finds several
+quantities of interest:
+ * base cycle length: time for the peak to travel along the line once
+   (or the time between two peaks, the period)
+ * conduction velocity: velocity of the peak (length of line / base
+   cycle length)
+ * action potential peak width: time between upstroke and downstroke 
+ * rise time: duration of the upstroke
+ * maximal peak height
+The measurements were taken by monitoring a fixed point and checking at each
+time step whether the potential crossed either a low or a high threshold (5%
+and 95% of the maximal potential respectively).
+The length of the line was varied between 25 and 200 length units and for
+each value 10 measurements of each aforementioned quantity were taken. From
+those 10 measurements, average and standard deviation were computed and
+plotted.
+
+> TODO: insert measurement plots
+
+Of course, the base cycle length increases linearly with the maximal length.
+The conduction velocity and maximal peak height have smaller
+values for small lengths, which corresponds to a high rate of succeeding
+action potentials. With longer lengths, i.e. lower rates, those values first
+increase strongly in value and then seem to strive to asymptotically against
+some upper limit (conduction velocity: 0.0582, max peak: 0.9931). 
+The action potentials peak width seems to behave similarly, but to verify
+the asymptotic behaviour, a closer investigation is required.
+The rise time is maximal for small lengths, then falls and goes towards some
+lower limit. One can conclude therefrom, that the action potentials rising
+edge is the most shallow for high rates and gets steeper for lower rates.
+
+Concerning the theoretical estimated relationship between conduction
+velocity and rise time
+```
+cv≈√(η/(2τ))(1-2α)
+```
+the measured values were plotted together with the curve given by the
+theoretical estimate (where α=0.17 was obtained by fitting the measured data
+to the formula using a non-linear least squares method; this is justified,
+since α acts only as an offset).
+
+> TODO: insert cv vs rt plot
+
+In order to (naively) quantize this result, both curves were approximated as
+linear and a linear regression was computed:
+
+|       | slope   | r^2  |
+|---    |---      |---   |
+|**exp**| -3.7e-4 | 0.92 |
+|**th** | -7.7e-4 | 0.99 |
+
+with a relative error of \~48%.
 
 
-# 5. Spatial dynamics in 2D
+## 4.2. In 2D
 <!--
-TODO: (using Aliev-Panfilov and Fenton)
+TODO: (using Fenton model)
+explain setup and discuss results for:
  * channel
  * spiral excitation
  * spiral wave and breakup
@@ -414,11 +504,13 @@ TODO: (using Aliev-Panfilov and Fenton)
    to numerical uncertainties
     * better results with larger time steps could be obtained with a
       different integrator (see below)
+ * the source current causing repeated depolarization could perhaps be used
+   to model pacemaker cells
 
 ### 6.1.2. Aliev & Panfilov
  * difficult to interpret
  * not very close to the underlying physics
- * but...
+ * good for spatial tissue simulations
 
 ### 6.1.3. Fenton et al
  * a phenomenological model, yet the quantities (_currents_ and _gates_)
@@ -430,6 +522,13 @@ TODO: (using Aliev-Panfilov and Fenton)
    subjectively longer
 
 ## 6.2. The Method
+
+
+## 6.3. The relation between conduction velocity and rise time
+ * While the gross form of the theoretical estimate and the measured data is
+   similar, a rather clear deviation should be acknowledged. Quantitatively
+   -from the compared slopes- a relative error of 48% stands against the
+   validity of the formula.
 
 
 # A. Appendix

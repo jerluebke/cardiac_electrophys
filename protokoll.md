@@ -12,9 +12,10 @@
     1. In 1D
     2. In 2D
 5. Discussion  
-A. Appendix
-    1. Aliev & Panfilov: Parameter variation  
-    2. The code  
+A. Appendix  
+    1. Aliev & Panfilov: Parameter variation
+    2. The code
+    3. Implementation of boundary conditions
 
 
 # 1. Introduction
@@ -64,7 +65,7 @@ For a better understanding it is helpful to take a closer look at the
 microscopic structure of the cardiomyocytes:
  * tubular cells containing chains of _myofibril_ (fibres composed of long
    proteins), which are responsible for contraction of the muscle tissue
- * _sarcoplastic reticulum_: membrane-enclosed regions, mainly storing 
+ * _sarcoplastic reticulum_: membrane-enclosed regions, mainly storing
    Ca^2+ ions
  * enclosed by a double lipid-layered membrane: the _sarcolemma_
 In longitudinal direction _interlacing disks_ join the cells together and
@@ -78,12 +79,12 @@ Now the interior and exterior (i.e. the intermediate space between
 neighbouring cells) regions of a cells exhibit different concentrations of
 various ion species (this imbalance is being maintained by special ion
 pumps and gates in the cell membrane), which results in a voltage between
-those regions: the membrane potential `V=Φ_i-Φ_e`, which in the rest case 
+those regions: the membrane potential `V=Φ_i-Φ_e`, which in the rest case
 is equal to the rest potential `V_rest`.
 
 > TODO: table with typical values for V\_rest
 
-If at some point the membrane potential is perturbed by a stimulus in such 
+If at some point the membrane potential is perturbed by a stimulus in such
 a way that it exceeds some threshold, the ion channels rapidly open causing
 the concentration difference of the ions between interior and exterior
 cell regions to invert resulting in a large upswing of the membrane
@@ -91,7 +92,7 @@ potential. This process is called _Depolarization_ and the peak of the
 membrane potential is called _action potential_.
 
 After reaching this peak the gates close again and the pumps recreate the
-prior concentration difference which causes the membrane potential to 
+prior concentration difference which causes the membrane potential to
 return to the rest value (_repolarization_).
 
 Since the membrane posses a finite specific electric capacity `C_m` [F m^-2]
@@ -108,8 +109,8 @@ membrane current density `I`.
 
 ## 1.3. Continuum description
 At a microscopic level the propagation of action potential is a discrete
-process (from cell to cell). However looking at tissue at sufficiently 
-large scales, it can be viewed as continuous (-> functional syncytium). It 
+process (from cell to cell). However looking at tissue at sufficiently
+large scales, it can be viewed as continuous (-> functional syncytium). It
 is important to note the anisotropic nature of this process: the tissue
 exhibits different conductivities in longitudinal and transversal direction
 with respect to the myofibril.
@@ -117,7 +118,7 @@ with respect to the myofibril.
 ### 1.3.1. Bidomain model
 One formulates potentials and current densities for the intra- and
 extracellular regions: `Φ_i, Φ_e, J_i, J_e`
-It is important to note, that formally all of these functions are defined 
+It is important to note, that formally all of these functions are defined
 on the whole domain.
 
 To set them into relation, consider Poisson's equation and Ohm's Law:
@@ -125,7 +126,7 @@ To set them into relation, consider Poisson's equation and Ohm's Law:
 E=-∇Φ, J=GE=-G∇Φ
 => J_i=-G_i ∇Φ_i, J_e=-G_e ∇Φ_e
 ```
-where E is the electrical field associated with the potential Φ and G is 
+where E is the electrical field associated with the potential Φ and G is
 the conductivity tensor accounting for the anisotropy.
 Imposing conservation of current:
 ```
@@ -157,7 +158,7 @@ Now all that is left to do is to model the conductivity tensor `D` to
 represent the tissue at hand.
 
 One way of doing this is to split this object
-into components parallel and perpendicular to the direction of the 
+into components parallel and perpendicular to the direction of the
 myofibril \vec{f}, like so
 ```
 D=D_{\perp} I + (D_{\parallel}-D_{\perp}) \vec{f}\vec{f}^{T}
@@ -173,11 +174,11 @@ taken by the following investigations.
 _Note_: Without external stimuli (enforced by von Neumann boundary
 conditions) bi- and monodomain models yield almost identical results.
 However when considering such external stimuli (e.g. defibrillation) the
-unequal anisotropies of intra- and extracellular regions are significant. 
+unequal anisotropies of intra- and extracellular regions are significant.
 
 
 # 2. Three models
-In this section I am going to describe three approaches [(out of an 
+In this section I am going to describe three approaches [(out of an
 abundance of available models)](www.cellml.org) which can be used to
 describe the dynamics of the membrane potentials.
 
@@ -215,7 +216,7 @@ solve.
 
 
 ## 2.2. Aliev & Panfilov (1996)
-While the Hodkin-Huxley model gives a very good description of 
+While the Hodkin-Huxley model gives a very good description of
 action potential dynamics, it is rather complex and therefor not preferable
 for large scale computations.
 
@@ -232,7 +233,7 @@ e = e_0 + \frac{\mu_1 W}{V + \mu_2}
 
 Here one has to solve two coupled 1st order ODEs.
 
-One can think of the relaxation variable W as summarizing and hiding all 
+One can think of the relaxation variable W as summarizing and hiding all
 the complex processes involving ion pumps etc. in order to cause the
 membrane potential to repolarize.
 
@@ -289,7 +290,7 @@ fast variable v
 * Vc, Vv, Vc_si: voltage thresholds
 * k: activation width parameter
 
-The problem to be solved in this description composes of three uncoupled 
+The problem to be solved in this description composes of three uncoupled
 1st order ODEs (V, v, w).
 
 
@@ -344,7 +345,7 @@ units (V\_{phys,0}=-60 mV).
 
 Upon an excitement which surpasses some threshold the action potential
 quickly raises up to its maximal value. The relaxation variable begins
-raising, too, slowly at first, but gradually growing faster until it 
+raising, too, slowly at first, but gradually growing faster until it
 steeply reaches its peak, which pulls the action potential back to its rest
 value.
 
@@ -417,7 +418,7 @@ At the beginning von-Neumann boundary conditions are imposed and the first
 value of the potential array is set to one. Then at each time step both
 arrays are updated using a simple Euler-step according to
 ```
-dV/dt=ηΔV+G(V, W)
+dV/dt=η d_xx V+G(V, W)
 dW/dt=G(V, W)
 ```
 where G(V, W) is the right hand side in equation (?).
@@ -434,7 +435,7 @@ quantities of interest:
    (or the time between two peaks, the period)
  * conduction velocity: velocity of the peak (length of line / base
    cycle length)
- * action potential peak width: time between upstroke and downstroke 
+ * action potential peak width: time between upstroke and downstroke
  * rise time: duration of the upstroke
  * maximal peak height
 The measurements were taken by monitoring a fixed point and checking at each
@@ -452,7 +453,7 @@ The conduction velocity and maximal peak height have smaller
 values for small lengths, which corresponds to a high rate of succeeding
 action potentials. With longer lengths, i.e. lower rates, those values first
 increase strongly in value and then seem to strive to asymptotically against
-some upper limit (conduction velocity: 0.0582, max peak: 0.9931). 
+some upper limit (conduction velocity: 0.0582, max peak: 0.9931).
 The action potentials peak width seems to behave similarly, but to verify
 the asymptotic behaviour, a closer investigation is required.
 The rise time is maximal for small lengths, then falls and goes towards some
@@ -483,6 +484,85 @@ with a relative error of \~48%.
 
 
 ## 4.2. In 2D
+The setups described below were simulated with both the Aliev-Panfilov and
+the Fenton model. However, the hereafter presented results are only taken
+from Fenton model, since while it exhibits the same phenomena as the
+first-mentioned, it also shows some additional interesting features.
+
+The Fenton simulation is based on three two-dimensional arrays (for the
+membrane potential V and for the inactivation gates v, w) holding the
+spatially resolved values of the corresponding quantities. These arrays are
+updated each time step with a simple Euler scheme according to
+```
+dV/dt = ηΔV + G_V(V, v, w)
+dv/dt = G_v(V, v, w)
+dw/dt = G_w(V, v, w)
+```
+where `G_V`, `G_v` and `G_w` are the right hand sides of equations (?), (?)
+and (?) respectively.
+
+All of the following setups used grid steps Δx=Δy=1. Varying this parameters
+means simply a rescaling of the system.
+
+
+### 4.2.1. Channel
+One considers a 64x256 grid with Dirichlet boundary conditions imposed along
+the long side (i.e. the x-direction) and periodical boundary conditions
+along the short side (i.e. the y-direction).
+
+For the initial conditions of V and w the same narrow stripe along the y
+axis and width of 20 grid points, and for v a stripe of same width but
+shifted 10 grid points in positive x-direction were set to 1.
+
+Running the simulation, an action potential peak quickly develops and loops
+through the domain (because of the periodic boundaries), which mimics pulses
+passing through at a constant rate. Because of the Dirichlet conditions
+along the long side regions of the action potential are pulled to zero,
+causing some kind of tail.
+
+> TODO: insert channel image
+
+The depicted situation of a confined channel could be used to describe a
+bundle of cells belonging to the electrical conducting system of the heart,
+which transmits an action potential to some target tissue area, in order to
+trigger its contraction.
+
+
+### 4.2.2. Spiral excitation
+Now one considers a 128x512 grid with von-Neumann boundary conditions
+imposed on all sides. The initial conditions to generate the first pulse are
+the same as described above (section 4.2.1.). Because of the von-Neumann
+conditions the pulse is not damped at the borders and passes through the
+domain only once.
+
+Now a small area of 10x10 grid points right in the middle of the domain has
+its membrane potential set to 1. In the absence of any prior excitation this
+simply produces a circular pulse running away in all directions.
+But if this perturbation happens in the wake of a preceding action potential
+an interaction with the relaxation variables - which have not yet fully
+returned to their rest values - takes place: Either the perturbation is
+suppressed right away, or it is pushed backwards taking the shape of an
+expanding croissant whose edges are running forward until they meet in the
+center. Upon meeting again the croissant becomes a pretzel which runs away
+in circular fashion, and the then slightly inwards turned edges generate a
+new croissant-shaped pulse which undergoes the same process.
+
+> TODO: insert spiral excitation series
+
+For the given setup, the sweet spot to insert this perturbation lies around
+2430 integration steps.
+
+While with the Fenton model and the used parameters each succeeding spiral
+is slightly damped causing the process to be extinguished completely after a
+finite number of iterations, the spirals generated with the Aliev-Panfilov
+model do not seem to exhibit such kind of behaviour and instead seem to go
+on indefinitely.
+
+
+### 4.2.3. Spiral wave and breakup
+Finally one considers a 256x512 grid with von-Neumann boundary conditions on
+all sites.
+
 <!--
 TODO: (using Fenton model)
 explain setup and discuss results for:
@@ -539,4 +619,4 @@ TODO:
 -->
 
 
->  vim: set ff=unix tw=79 sw=4 ts=4 et ic ai : 
+>  vim: set ff=unix tw=79 sw=4 ts=4 et ic ai :

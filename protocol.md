@@ -625,10 +625,10 @@ TODO:
  * More in depth investigation of break up mechanisms
 
 ## 6.3. The relation between conduction velocity and rise time
- * While the gross form of the theoretical estimate and the measured data is
-   similar, a rather clear deviation should be acknowledged. Quantitatively
-   -from the compared slopes- a relative error of 48% stands against the
-   validity of the formula.
+While the gross form of the theoretical estimate and the measured data is
+similar, a rather clear deviation should be acknowledged. Quantitatively
+-from the compared slopes- a relative error of 48% stands against the
+validity of the formula.
 
 ## 6.4. Physiological Interpretations
 notice especially the influence of boundary and initial conditions (typical
@@ -641,8 +641,26 @@ which transmits an action potential to some target tissue area, in order to
 trigger its contraction.
 
 ### 6.4.2. Spiral excitation
+This situation resembles abnormal activity of heart tissue, which can for
+example be caused by increased automaticity (while all cardiac myocytes are
+able to generate an action potential, the rhythm is set by pacemaker cells
+in the AV node; spontaneously firing tissue cells constitute a pathological
+condition).
 
 ### 6.4.3. Spiral breakup
+Looking at the spiral setup, one can find similarities to re-entrant waves.
+Both phenomena can cause ventricular and supra-ventricular tachycardia.
+
+The chaotic excitations of the tissue closely resemble ventricular
+fibrillation.
+
+The only way to stop (the otherwise fatal) ventricular fibrillation is to
+apply a high energy electrically shock to depolarize all (or a
+critical mass) of cardiac tissue (defibrillation). After the cells have
+repolarized, they can be governed again by the AV nodes pacemaker cells.
+
+## 6.5. Further Outlook
+> TODO
 
 
 # A. Appendix

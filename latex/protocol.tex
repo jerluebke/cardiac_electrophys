@@ -1,0 +1,92 @@
+\documentclass[11pt,a4paper]{scrartcl}
+\usepackage{fontspec}
+\usepackage{polyglossia}
+    \setdefaultlanguage{english}
+\usepackage{lmodern}
+\usepackage{fixcmex}
+\usepackage{csquotes}
+\usepackage{enumitem}
+\usepackage{mathtools}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{siunitx}
+    \sisetup{range-units=brackets}
+\usepackage{physics}
+\usepackage{textcomp}
+\usepackage{gensymb}
+\usepackage{wasysym}
+\usepackage[version=4]{mhchem}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{caption}
+\usepackage{graphicx}
+    \graphicspath{img}
+\usepackage{tikz}
+    \usetikzlibrary{calc,external}
+    \tikzexternalize[prefix=extern/]
+\tikzexternaldisable
+\usepackage{pgfplots}
+    \pgfplotsset{%
+        compat=1.16,
+        table/search path={data},
+    }
+\usepackage{todonotes}
+\usepackage[%
+    colorlinks=true, linkcolor=blue,
+    % hidelinks
+]{hyperref}
+
+\usepackage[%
+    backend=biber,
+    natbib=true,
+    sorting=nyt,
+    url=true,
+    doi=true,
+    isbn=false,
+    maxbibnames=3,
+    maxcitenames=2,
+    date=year,
+    style=numeric-comp,
+]{biblatex}
+\addbibresource{literatur.bib}
+
+
+\newcommand{\eg}{e.\,g.}
+\newcommand{\ie}{i.\,e.}
+
+
+\titlehead{Ruhr-Universität Bochum, SS 2019}
+\subject{Fortgeschrittenen-Praktikum Theorie}
+\title{Numerical Simulation of Cardiac Tissue Electrophysiology}
+\subtitle{}
+\author{Jeremiah Lübke, 108015230366}
+\date{\today}
+\publishers{Betreuer: Dr. Jürgen Dreher}
+
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\input{sections/1-introduction.tex}
+
+\input{sections/2-three-models.tex}
+
+\input{sections/3-dynamics-of-a-single-cell.tex}
+
+\input{sections/4-spatial-dynamics.tex}
+
+\input{sections/5-discussion.tex}
+
+\input{sections/appendix.tex}
+
+\addcontentsline{toc}{section}{Literature}
+\nocite{*}
+\printbibliography[title=Literature]
+
+\end{document}
+
+
+% vim: set ff=unix tw=79 sw=4 ts=4 et ic ai :

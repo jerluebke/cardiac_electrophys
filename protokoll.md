@@ -522,11 +522,6 @@ causing some kind of tail.
 
 > TODO: insert channel image
 
-The depicted situation of a confined channel could be used to describe a
-bundle of cells belonging to the electrical conducting system of the heart,
-which transmits an action potential to some target tissue area, in order to
-trigger its contraction.
-
 
 ### 4.2.2. Spiral excitation
 Now one considers a 128x512 grid with von-Neumann boundary conditions
@@ -561,18 +556,35 @@ on indefinitely.
 
 ### 4.2.3. Spiral wave and breakup
 Finally one considers a 256x512 grid with von-Neumann boundary conditions on
-all sites.
+all sites. The initial conditions are given by a strip of excited membrane
+potential which only reaches into the domain by some extend, i.e. it has
+loose end.
 
-<!--
-TODO: (using Fenton model)
-explain setup and discuss results for:
- * channel
- * spiral excitation
- * spiral wave and breakup
--->
+When performing the simulation, the main part of the initial strip develops
+into a pulse like seen before, but the loose end turns away in a spiral
+fashion and eventually hits the wake of the main pulse. 
+When the tip reaches not yet fully repolarized tissue, it fails to
+continue propagating normally and instead breaks up (In the Fenton model
+this is due to the interaction of the membrane potential of the tip with
+the inactivation gates of the wake). This process starts to successively
+generate new spirals. It amplifies itself, soon causing multiple spirals to
+be present at once, which spread out until the whole domain is disruptively
+filled with small and rather fast moving spirals.
+
+> TODO: breakup image series
+
+With the Aliev-Panfilov model the aforementioned initial conditions generate
+an ever-growing spiral without any disruptive behaviour.
 
 
 # 6. Discussion
+
+<!--
+TODO:
+ * Importance of boundary and initial conditions
+ * further investigation of breakup mechanisms (apd, cv restitution curves)
+-->
+
 ## 6.1. The Models
 ### 6.1.1. Hodgkin & Huxley
  * very intuitive model
@@ -597,18 +609,40 @@ explain setup and discuss results for:
    resemble the physics closely
  * Parameters have physical meaning and are designed in such a way that
    allows to influence the models behaviour purposefully
-...
  * rather complex compared to Aliev & Panfilov; tissue simulations take
    subjectively longer
+ * gives interesting spatial behaviour
 
 ## 6.2. The Method
+ * Throughout this work all computations were performed with a simple
+   Euler-step
+    * This already gave meaningful and interesting results
+ * However one could alternatively apply more sophisticated methods such as
+   semi-implicit schemes (e.g. Crank-Nicolson) or multi-step Runge-Kutta
+   methods
+    * one could compare these methods for accuracy and efficiency
 
+ * More in depth investigation of break up mechanisms
 
 ## 6.3. The relation between conduction velocity and rise time
  * While the gross form of the theoretical estimate and the measured data is
    similar, a rather clear deviation should be acknowledged. Quantitatively
    -from the compared slopes- a relative error of 48% stands against the
    validity of the formula.
+
+## 6.4. Physiological Interpretations
+notice especially the influence of boundary and initial conditions (typical
+for PDEs)
+
+### 6.4.1. Channel
+The depicted situation of a confined channel could be used to describe a
+bundle of cells belonging to the electrical conducting system of the heart,
+which transmits an action potential to some target tissue area, in order to
+trigger its contraction.
+
+### 6.4.2. Spiral excitation
+
+### 6.4.3. Spiral breakup
 
 
 # A. Appendix

@@ -1,3 +1,184 @@
 \section{Introduction}
+The human heart is a fascinating apparatus, which does its work in a
+constant and reliable fashion - usually without disruption - for the whole
+of a persons life. To put things into perspective, the heart of an average
+human being performs \\
+\begin{tabular}[t]{C R l}
+            & 70    & (typical rest pulse per minute) \\
+    \times  & 1440  & (minutes per day) \\
+    \times  & 365   & (days per year) \\
+    \times  & 80    & (estimated average human life time) \\
+    \sim    & \mathbf{3\times10^9} & beats per life time,
+\end{tabular} \\
+while a typical car engine performs \\
+\begin{tabular}[t]{C R l}
+            & \num{300000}  & (km drive during the cars life time) \\
+    /       & 50    & (km/h, average speed) \\
+    \times  & 60    & (minutes per hour) \\
+    \times  & \num{2200}    & (revolutions per minute) \\
+    \sim    & \mathbf{8\times10^8}     & duty cycles per life time.
+\end{tabular} \\
+
+Investigating the hearts physical working principle poses an interesting
+challenge with undoubtedly many relevant applications such as
+gaining a deeper understanding of and developing more advanced treatments
+for - many times dangerous - arrhythmia.
+
+The heart muscles basic functionality is rhythmically contracting itself
+triggered by electrical signals, which are being conducted by the heart
+muscle cells (the cardiomyocytes) themselves (this is the remarkable thing
+here, because usually this task is being taken care of by neural cells),
+which means that this kind of tissue combines the ability to both perform
+mechanical work and conduct electrical signals.
+
+Going a little more into detail: pacemaker cells (specialized
+cardiomyocytes) in the SA-node rhythmically generate action potential
+which travel at about \SIrange{.05}{1}{\metre\per\second} to the AV-node and
+from there after a
+delay at about \SIrange{2}{4}{\metre\per\second} through the ventricular
+bundles and the Purkinje
+fibres. Ultimately those action potentials cause the contraction of the
+regions of heart tissue controlled by the respective bundles of conduction
+cells.
+
+
+\subsection{Structure of the Cardiomyocytes}
+For a better understanding it is helpful to take a closer look at the
+microscopic structure of the cardiomyocytes:
+\begin{itemize}
+    \item
+        tubular cells containing chains of \emph{myofibril} (fibres composed
+        of long proteins), which are responsible for contraction of the
+        muscle tissue
+
+    \item
+        \emph{sarcoplastic reticulum}: membrane-enclosed regions, mainly
+        storing \ce{Ca2+} ions
+
+    \item
+        enclosed by a double lipid-layered membrane: the \emph{sarcolemma}
+\end{itemize}
+In longitudinal direction \emph{interlacing disks} join the cells together
+and via the \emph{gap junctions} allow propagation of action potentials.
+Because of these features the heart muscle forms a \emph{syncytium}, \ie~the
+single cells behave like a single coordinated unit.
+
+
+\subsection{Modeling the membrane potential}
+Now the interior and exterior (\ie~the intermediate space between
+neighbouring cells) regions of a cells exhibit different concentrations of
+various ion species (this imbalance is being maintained by special ion
+pumps and gates in the cell membrane), which results in a voltage between
+those regions: the membrane potential $V=\Phi_i-\Phi_e$, which in the rest
+case is equal to some rest potential $V_{\mathrm{rest}}$.
+
+If at some point the membrane potential is perturbed by a stimulus in such
+a way that it exceeds some threshold, the ion channels rapidly open causing
+the concentration difference of the ions between interior and exterior
+cell regions to invert resulting in a large upswing of the membrane
+potential. This process is called \emph{Depolarization} and the peak of the
+membrane potential is called \emph{action potential}.
+
+After reaching this peak the gates close again and the pumps recreate the
+prior concentration difference which causes the membrane potential to
+return to the rest value (\emph{repolarization}).
+
+Since the membrane posses a finite specific electric capacity $C_m,
+[\si{\farad\per\metre\squared}]$
+the membrane potential obeys the capacitor equation:
+\begin{equation}
+    C\,\dv{V}{t}=I=-\sum_{s}I_{s}
+    \label{eq:cap}
+\end{equation}
+\todo{is this correct? explain I!}
+\todo{add circut diagram?}
+Therewith the dynamics of $V_m$ can be modeled by modeling the cross
+membrane current density $I_m$.
+
+
+\subsection{Developing a Continuum Description}
+At a microscopic level the propagation of action potential is a discrete
+process (from cell to cell). However looking at tissue at sufficiently
+large scales, it can be viewed as continuous (\textrightarrow~functional
+syncytium). It is important to note the anisotropic nature of this process:
+the tissue exhibits different conductivities in longitudinal and transversal
+direction with respect to the myofibril.
+
+\subsubsection{Bidomain model}
+One formulates potentials and current densities for the intra- and
+extracellular regions: $\Phi_i, \Phi_e, J_i, J_e$.
+It is important to note, that formally all of these functions are defined
+on the whole domain.
+
+To set them into relation, consider Possion's equation and Ohm's Law:
+\begin{gather}
+    \myvec{E}=-\nabla\Phi,\quad \myvec{J}=\myten{G}\,\myvec{E} \nonumber \\
+    \implies \myvec{J_i}=-\myten{G_i}\,\nabla\Phi_i,\quad
+    \myvec{J_e}=-\myten{G_e}\,\nabla\Phi_e
+\end{gather}
+where \myvec{E} is the electrical field associated with the potential $\Phi$
+and \myten{G} is the conductivity tensor accounting for the anisotropy.
+
+Imposing conservation of current:
+\begin{equation}
+    \nabla\cdot(\myvec{J_i}+{J_e})=0 \implies
+    -\nabla\cdot\myvec{J_i}=\nabla\cdot\myvec{J_e}=I_m
+\end{equation}
+where $I_m$ is the transmembrane current density (units
+\si{\ampere\per\metre\cubed}).
+
+Rewriting the capacitor equation \eqref{eq:cap}:
+\begin{equation}
+    I_m=\beta\left(C\,\dv{V}{t}+\sum_{s}I_{s}\right),\quad V=\Phi_i-\Phi_e
+\end{equation}
+(where $\beta$ is a scaling constant with units \si{\per\metre}), one finds:
+\begin{subequations}
+\begin{align}
+    \nabla\cdot\myten{G_i}(\nabla{V}+\nabla\Phi_e)
+    &=\beta\left(C\,\dv{V}{t}+I_{\mathrm{ion}}\right)
+    \label{eq:i}
+    \\
+    \nabla\cdot\left((\myten{G_i}+\myten{G_e})\,\nabla\Phi_e\right)
+    &=-\nabla\cdot(\myten{G_i}\,\nabla{V})
+    \label{eq:ii}
+\end{align}
+\end{subequations}
+
+Now one has a system of two coupled PDEs with \eqref{eq:i} being parabolic
+and \eqref{eq:ii} being elliptic, which is rather difficult to solve.
+
+\subsubsection{Monodomain model}
+In order to make matters more accessible one makes the assumption that the
+intra- and extracellular anisotropies are identical, \ie~the respective
+conductivities are proportional:
+\begin{equation}
+    \myten{G_e}=\lambda\myten{G_i} \implies
+    \dv{V}{t}=\nabla\cdot{\myten{D}}\nabla{V}-\frac{1}{C}\sum_{s}I_{s},
+    \quad \myten{D}=\frac{1}{C\beta}\myten{G}
+\end{equation}
+which reduces the problem to one parabolic PDE (a diffusion equation).
+
+Now all that is left to do is to model the conductivity tensor \myten{D} to
+represent the tissue at hand.
+One way of doing this is to split this object
+into components parallel and perpendicular to the direction of the
+myofibril \myvec{f}, like so
+\begin{equation}
+    \myten{D}=\myten{D_{\perp}}\,\mathbb{1}+(\myten{D_{\parallel}}
+    -\myten{D_{\perp}})\,\myvec{f}\,\myvec{f^T}
+\end{equation}
+where for typical cardiomyocytes one has the relation
+$D_{\parallel}/D_{\perp}\sim2\ldots10$.
+
+Another way is to neglect the anisotropies all together and write the
+conductivity tensor as a scalar value: $\myten{D}\to\eta$. This is the
+approach taken by the following investigations.
+
+\vspace{\baselineskip}
+\emph{Note}: Without external stimuli (enforced by von Neumann boundary
+conditions) bi- and monodomain models yield almost identical results.
+However when considering such external stimuli (e.g. defibrillation) the
+unequal anisotropies of intra- and extracellular regions are significant.
+
 
 % vim: set ff=unix tw=79 sw=4 ts=4 et ic ai :

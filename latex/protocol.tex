@@ -9,8 +9,9 @@
 \usepackage{mathtools}
 \usepackage{amssymb}
 \usepackage{amsfonts}
+\usepackage{bbold}
 \usepackage{siunitx}
-    \sisetup{range-units=brackets}
+    \sisetup{range-units=single}
 \usepackage{physics}
 \usepackage{textcomp}
 \usepackage{gensymb}
@@ -51,8 +52,16 @@
 \addbibresource{literatur.bib}
 
 
+% math mode version of r, l, c column types
+\newcolumntype{R}{>{$}r<{$}}
+\newcolumntype{L}{>{$}l<{$}}
+\newcolumntype{C}{>{$}c<{$}}
+
 \newcommand{\eg}{e.\,g.}
 \newcommand{\ie}{i.\,e.}
+
+\newcommand{\myvec}[1]{\ensuremath{\mathbf{#1}}}
+\newcommand{\myten}[1]{\ensuremath{\mathbf{#1}}}
 
 
 \titlehead{Ruhr-Universität Bochum, SS 2019}
@@ -69,6 +78,8 @@
 \maketitle
 
 \tableofcontents
+
+\newpage
 
 \input{sections/1-introduction.tex}
 

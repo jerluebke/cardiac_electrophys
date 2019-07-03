@@ -1,27 +1,27 @@
 \begin{circuitikz}
-    \draw               (3, 0)
-        to[short,o-]    (3, 2)
-        to[short]       (0, 2)
-        to[C=$C_m$]     (0, 8)
-        to[short]       (3, 8)
-        to[short,-o]    (3, 10);
+    \draw                               (5, 0)
+        to[short,o-,l=intracellular]    (5, 1)
+        to[short]                       (1, 1)
+        to[C=$C_m$]                     (1, 5.5)
+        to[short]                       (5, 5.5)
+        to[short,-o,l=extracellular]    (5, 6.5);
 
-    \draw                               (2, 2)
-        to[short,i=$I_{\mathrm{Na}}$]   (2, 4)
-        to[R=Na gate]                   (2, 6)
-        to[V,v=$U_{\mathrm{Na}}$]       (2, 8);
+    \draw                               (3, 5.5)
+        to[short,i=$I_{\mathrm{Na}}$]   (3, 4)
+        to[R=Na gate]                   (3, 2.5)
+        to[V,v=$U_{\mathrm{Na}}$]       (3, 1);
 
-    \draw                               (4, 2)
-        to[short,i=$I_{\mathrm{K}}$]    (4, 4)
-        to[R=K gate]                    (4, 6)
-        to[V,v=$U_{\mathrm{K}}$]        (4, 8);
+    \draw                               (6, 5.5)
+        to[short,i=$I_{\mathrm{K}}$]    (6, 4)
+        to[R=K gate]                    (6, 2.5)
+        to[V,v=$U_{\mathrm{K}}$]        (6, 1);
 
-    \draw                               (3, 2)
-        to[short]                       (6, 2)
-        to[short,i=$I_{\mathrm{Ca}}$]   (6, 4)
-        to[R=Ca gate]                   (6, 6)
-        to[V,v=$U_{\mathrm{Ca}}$]       (6, 8)
-        to[short]                       (3, 8);
+    \draw                               (5, 5.5)
+        to[short]                       (9, 5.5)
+        to[short,i=$I_{\mathrm{Ca}}$]   (9, 4)
+        to[R=Ca gate]                   (9, 2.5)
+        to[V,v=$U_{\mathrm{Ca}}$]       (9, 1)
+        to[short]                       (5, 1);
 
 \end{circuitikz}
 

@@ -1,3 +1,78 @@
+\newcommand{\Vtilde}{\ensuremath{\tilde{V}}}
+
 \section{Three Models}
+In this section I am going to describe three approaches -- out of an
+abundance of available models (\url{www.cellml.org}) -- which can be used to
+describe the dynamics of the membrane potential.
+
+\subsection{Hudgkin \& Huxley (1952)}
+This model was developed by A.~L.~Hodgkin and A.~F.~Huxley to fit
+measurements taken on a giant squid axon prior to detailed knowledge about
+the biophysical mechanisms being available.
+
+The membrane current density is modeled as the sum of Sodium, Potassium and
+a leakage current, each obeying Ohm's Law:
+\begin{gather}
+    I_m = \sum_{s}I_{s}=I_{\mathrm{Na}}+I_{\mathrm{K}}+I_{\mathrm{leak}} \\
+    I_s = g_s\,(V-V_s) \nonumber
+\end{gather}
+where the specific conductivites are described by dimensionless gating
+variables $n, m, h\in[0,1]$:
+\begin{equation*}
+    g_{\mathrm{Na}}=\bar{g}_{\mathrm{Na}}\,n^4,\quad
+    g_{\mathrm{K}}=\bar{g}_{\mathrm{K}}\,m^3\,h,\quad
+    g_{\mathrm{leak}}=\bar{g}_{\mathrm{leak}}
+\end{equation*}
+
+The respective rest potentials and maximal specific conductivities were measured as:
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{c | C C}
+        \toprule
+        Current & V_s/\si{\milli\volt} &
+        \bar{g}_s/\si{\milli\siemens\per\centi\metre\squared} \\
+        \midrule
+        Na      & 115   & 120   \\
+        K       & -12   & 36    \\
+        leak    & 10    & 0.3   \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The gating variables obey the following ODEs:
+\begin{subequations}
+\begin{align}
+    \dv{n}{t}&=\alpha_{n}\,(1-n)-\beta_{n} \label{eq:n} \\
+    \dv{m}{t}&=\alpha_{m}\,(1-m)-\beta_{m} \label{eq:m} \\
+    \dv{h}{t}&=\alpha_{h}\,(1-h)-\beta_{h} \label{eq:h}
+\end{align}
+\end{subequations}
+with ($\Vtilde=V/\si{\milli\volt}$):
+\begin{align*}
+    \alpha_{n}&=\SI{.01}{\per\milli\second}
+        \frac{\Vtilde-10}{1-
+            \exp\left(\frac{10-\Vtilde}{10}\right)},&
+    \beta_{n}&=\SI{.125}{\per\milli\second}
+        \exp\left(-\frac{\Vtilde}{80}\right) \\
+    \alpha_{m}&=\SI{.1}{\per\milli\second}
+        \frac{\Vtilde-25}{1-
+            \exp\left(\frac{25-\Vtilde}{10}\right)},&
+    \beta_{m}&=\SI{4}{\per\milli\second}
+        \exp\left(-\frac{\Vtilde}{18}\right) \\
+    \alpha_{h}&=\SI{.07}{\per\milli\second}
+        \exp\left(-\frac{\Vtilde}{20}\right),&
+    \beta_{h}&=\frac{1}{1+
+        \exp\left(\frac{30-\Vtilde}{10}\right)}
+\end{align*}
+
+Thus, one has to solve a system of four first-order uncoupled ODEs
+(\ref{eq:cap}, \ref{eq:n}, \ref{eq:m}, \ref{eq:h}).
+
+
+\subsection{Aliev \& Panfilov (1996)}
+
+
+\subsection{Fenton et al (2002)}
+
 
 % vim: set ff=unix tw=79 sw=4 ts=4 et ic ai :

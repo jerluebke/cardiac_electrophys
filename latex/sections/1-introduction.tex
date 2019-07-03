@@ -16,7 +16,7 @@ while a typical car engine performs \\
     /       & 50    & (km/h, average speed) \\
     \times  & 60    & (minutes per hour) \\
     \times  & \num{2200}    & (revolutions per minute) \\
-    \sim    & \mathbf{8\times10^8}     & duty cycles per life time.
+    \sim    & \mathbf{8\times10^8} & duty cycles per life time.
 \end{tabular} \\
 
 Investigating the hearts physical working principle poses an interesting
@@ -36,32 +36,26 @@ cardiomyocytes) in the SA-node rhythmically generate action potential
 which travel at about \SIrange{.05}{1}{\metre\per\second} to the AV-node and
 from there after a
 delay at about \SIrange{2}{4}{\metre\per\second} through the ventricular
-bundles and the Purkinje
-fibres. Ultimately those action potentials cause the contraction of the
-regions of heart tissue controlled by the respective bundles of conduction
-cells.
+bundles and the Purkinje fibres. Ultimately those action potentials cause the
+contraction of the regions of heart tissue controlled by the respective bundles
+of conduction cells.
 
 
 \subsection{Structure of the Cardiomyocytes}
 For a better understanding it is helpful to take a closer look at the
 microscopic structure of the cardiomyocytes:
-\begin{itemize}
-    \item
-        tubular cells containing chains of \emph{myofibril} (fibres composed
-        of long proteins), which are responsible for contraction of the
-        muscle tissue
+\todo{add relevant picture from wikipedia}
 
-    \item
-        \emph{sarcoplastic reticulum}: membrane-enclosed regions, mainly
-        storing \ce{Ca2+} ions
+Cardiomyocytes are tubular cells enclosed by the \emph{sarcolemma} (a double
+lipid-layered membrane), containing chains of \emph{myofibril} (fibres composed
+of long proteins), which are responsible for contraction of the muscle tissue.
+Additionally the cells contain the \emph{sarcoplastic reticulum}, which is a
+membrane-enclosed region, mainly for storing \ce{Ca2+} ions.
 
-    \item
-        enclosed by a double lipid-layered membrane: the \emph{sarcolemma}
-\end{itemize}
 In longitudinal direction \emph{interlacing disks} join the cells together
 and via the \emph{gap junctions} allow propagation of action potentials.
 Because of these features the heart muscle forms a \emph{syncytium}, \ie~the
-single cells behave like a single coordinated unit.
+whole of the single cells behaves like a single coordinated unit.
 
 
 \subsection{Modeling the membrane potential}
@@ -83,17 +77,25 @@ After reaching this peak the gates close again and the pumps recreate the
 prior concentration difference which causes the membrane potential to
 return to the rest value (\emph{repolarization}).
 
-Since the membrane posses a finite specific electric capacity $C_m,
+Since the membrane posses a finite specific electric capacity $C,
 [\si{\farad\per\metre\squared}]$
 the membrane potential obeys the capacitor equation:
-\begin{equation}
-    C\,\dv{V}{t}=I=-\sum_{s}I_{s}
-    \label{eq:cap}
-\end{equation}
-\todo{is this correct? explain I!}
+\begin{subequations}
+\begin{align}
+    C\,\dv{V}{t}=I
+    \label{eq:cap} \\
+    I=-\sum_{s}I_{s}
+    \label{eq:cur}
+\end{align}
+\end{subequations}
+were the total membrane current density $I$ is the sum of all involved
+species-specific current densities.
 \todo{add circut diagram?}
-Therewith the dynamics of $V_m$ can be modeled by modeling the cross
-membrane current density $I_m$.
+\begin{figure}[h!]
+    \input{tikz/circuit.tex}
+\end{figure}
+Therewith the dynamics of $V$ can be modeled by modeling the
+membrane current densities $I_s$.
 
 
 \subsection{Developing a Continuum Description}
@@ -177,7 +179,7 @@ approach taken by the following investigations.
 \vspace{\baselineskip}
 \emph{Note}: Without external stimuli (enforced by von Neumann boundary
 conditions) bi- and monodomain models yield almost identical results.
-However when considering such external stimuli (e.g. defibrillation) the
+However when considering such external stimuli (\eg~defibrillation) the
 unequal anisotropies of intra- and extracellular regions are significant.
 
 

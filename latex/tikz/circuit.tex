@@ -1,0 +1,29 @@
+\begin{circuitikz}
+    \draw               (3, 0)
+        to[short,o-]    (3, 2)
+        to[short]       (0, 2)
+        to[C=$C_m$]     (0, 8)
+        to[short]       (3, 8)
+        to[short,-o]    (3, 10);
+
+    \draw                               (2, 2)
+        to[short,i=$I_{\mathrm{Na}}$]   (2, 4)
+        to[R=Na gate]                   (2, 6)
+        to[V,v=$U_{\mathrm{Na}}$]       (2, 8);
+
+    \draw                               (4, 2)
+        to[short,i=$I_{\mathrm{K}}$]    (4, 4)
+        to[R=K gate]                    (4, 6)
+        to[V,v=$U_{\mathrm{K}}$]        (4, 8);
+
+    \draw                               (3, 2)
+        to[short]                       (6, 2)
+        to[short,i=$I_{\mathrm{Ca}}$]   (6, 4)
+        to[R=Ca gate]                   (6, 6)
+        to[V,v=$U_{\mathrm{Ca}}$]       (6, 8)
+        to[short]                       (3, 8);
+
+\end{circuitikz}
+
+
+% vim: set ff=unix tw=79 sw=4 ts=4 et ic ai :

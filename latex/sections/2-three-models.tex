@@ -5,7 +5,7 @@ In this section I am going to describe three approaches -- out of an
 abundance of available models (\url{www.cellml.org}) -- which can be used to
 describe the dynamics of the membrane potential.
 
-\subsection{Hudgkin \& Huxley (1952)}
+\subsection{Hodgkin \& Huxley (1952)}
 This model was developed by A.~L.~Hodgkin and A.~F.~Huxley to fit
 measurements taken on a giant squid axon prior to detailed knowledge about
 the biophysical mechanisms being available.
@@ -70,9 +70,96 @@ Thus, one has to solve a system of four first-order uncoupled ODEs
 
 
 \subsection{Aliev \& Panfilov (1996)}
+While the Hodkin-Huxley model gives a very good description of
+action potential dynamics, it is rather complex and therefor not preferable
+for large scale computations.
 
+An alternative model was formulated by Aliev and Panfilov, which refrains
+from using a description based on biophysical details and instead uses two
+variables (the potential $V$ and a relaxation variable $W$) to
+phenomenologically reproduce the membrane potential dynamics of
+cardiomyocytes:
+\begin{subequations}
+\begin{align}
+    \dv{V}{t}&=-k\,V\,(V-a)\,(V-1)-V\,W \label{eq:ap_pot} \\
+    \dv{W}{t}&=\epsilon(V, W)\,(-k\,V\,(V-a-1)-W) \label{eq:ap_relax} \\
+    \epsilon&=\epsilon_0+\frac{\mu_1\,W}{V+\mu_2} \nonumber
+\end{align}
+\end{subequations}
+
+The relaxation variable $W$ summarizes (or hides) all the complex processes
+involving ion pumps etc., which cause the membrane potential to repolarize.
+
+Here one has to solve two coupled first-order ODEs.
 
 \subsection{Fenton et al (2002)}
+Yet another model to be introduced here is again based on the capacitor
+equation \eqref{eq:cap}. Unlike the models presented above, this approach
+allows to easily investigate chaotic wave breakup mechanisms (its technical
+meaning and possible physiological interpretation will be discussed in section
+and section \todo{add section references} respectively).
+
+The membrane current density is modeled as the sum of the following
+phenomenological current densities:
+\begin{itemize}
+    \item fast inward current
+        \[I_{fi}=-v\,\Theta(V-V_c)\,(V-V_c)\,(1-V)/\tau_d\]
+    \begin{itemize}
+        \item depolarizes membrane upon an excitation above $V_c$
+        \item depends on a fast activation mechanism $\Theta(V-V_c)$ modeled by
+            a Heaviside step function and the fast inactivation gate $v$
+    \end{itemize}
+
+    \item slow outward current
+        \[I_{so}=V\,(1-\Theta(V-V_c))/\tau_0+\Theta(V-V_c)/\tau_r\]
+    \begin{itemize}
+        \item repolarizes membrane back to resting potential
+        \item depends on fast activation mechanism $\Theta(V-V_c)$
+    \end{itemize}
+
+    \item slow inward current
+        \[I_{si}=-w\,\frac{d}{2\,\tau_{si}},\quad
+            d\to 1+\tanh(k\,(V-V_{c}^{si}))\]
+    \begin{itemize}
+        \item inactivation current to balance $I_{so}$
+        \item produces observed plateau in action potential
+        \item depends on slow inactivation gate $w$ and on a very fast
+            activation gate d, which is modeled by a steady-state
+            function
+    \end{itemize}
+\end{itemize}
+
+The two gate variables governing the currents:
+\begin{itemize}
+    \item fast inactivation gate
+        \begin{gather}
+            \dv{v}{t}=(1-\Theta(V-V_c))\,(1-v)/\tau_{v-}
+            -\Theta(V-V_c)\,v/\tau_{v+} \label{eq:v} \\
+            \qq*{with}
+            \tau_{v-}=(1-\Theta(V-V_v))\,\tau_{v-,1}
+                +\Theta(V-V_v)\,\tau_{v-,2} \nonumber
+        \end{gather}
+    \item slow inactivation gate
+        \begin{equation}
+            \dv{w}{t}=(1-\Theta(V-V_c))\,(1-w)/\tau_{w-}
+            -\Theta(V-V_c)\,w/\tau_{w+} \label{eq:w}
+        \end{equation}
+\end{itemize}
+
+And finally the parameters:
+\begin{itemize}
+    \item $\tau_{v+}, \tau_{v-,1}, \tau_{v-,2}$: opening (+) and closing (-)
+        times of the fast variable $v$
+    \item $\tau_{w+}, \tau_{w-}$: opening and closing times of the slow
+        variable $w$
+    \item $\tau_d, \tau_r$: de- and repolarization times
+    \item $\tau_0, \tau_{si}$: time constants for slow currents
+    \item $V_c, V_v, V_{c}^{si}$: voltage thresholds
+    \item $k$: activation width parameter
+\end{itemize}
+
+The problem to be solved here is composed of three uncoupled first-order
+ODEs (\ref{eq:cap}, \ref{eq:v}, \ref{eq:w}).
 
 
 % vim: set ff=unix tw=79 sw=4 ts=4 et ic ai :

@@ -1,7 +1,7 @@
 \section{Continuous Spatial Dynamics}
 The spatial tissue simulations discussed in this section are based on a
 continuous approximation of the tissue, which in reality is composed of
-discrete cells. The mathmatical approach was introduced in section
+discrete cells. The mathematical approach was introduced in section
 \ref{sec:contdescr}. In practice - regardless of the specific model used - one
 adds a diffusion term to the ODE describing the temporal evolution of the
 membrane potential and obtains a parabolic PDE:
@@ -163,8 +163,35 @@ croissant-shaped pulse which undergoes the same process.
 
 \todo{spiral excitation series}
 
+For the given setup, the sweet spot in insert this perturbation lies around
+2430 integration steps.
+
+While with the Fenton model each succeeding spiral is slightly damped causing
+the process to be extinguished completely after a finite number of iterations,
+the spirals generated with the Aliev-Panfilov model do not seem to exhibit such
+kind of behaviour and instead seem to go on indefinitely.
+
 
 \subsubsection{Spiral Wave and Breakup}
+Finally one considers a $256\times512$ grid with von-Neumann boundary
+conditions on all sites. The initial conditions are given by a stripe of
+excited membrane potential which only reaches into the domain by some extend,
+\ie~it has a loose end.
+
+When performing the simulation, the main part of the initial stripe develops
+into a pulse like seen before, but the loose end turns away growing into a
+spiral and eventually hits its own wake. When the tip reaches not yet fully
+repolarized tissue, it fails to continue propagating normally and instead
+breaks up (in the Fenton model this is due to the interaction of the action
+potential of the tip with the inactivation gates in the wake). This process
+starts to successively generate new spirals. It amplifies itself, soon causing
+multiple spirals to be present at once, which spread out until the whole domain
+is disruptively filled with small and rather fast moving spirals.
+
+\todo{breakup image series}
+
+With the Aliev-Panfilov model the aforementioned initial conditions generate
+an ever-growing spiral without any disruptive behaviour.
 
 
 % vim: set ff=unix tw=79 sw=4 ts=4 et ic ai :

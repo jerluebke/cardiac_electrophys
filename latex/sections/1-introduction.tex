@@ -49,7 +49,7 @@ Cardiomyocytes are tubular cells enclosed by the \emph{sarcolemma} (a double
 lipid-layered membrane), containing chains of \emph{myofibril} (fibres composed
 of long proteins), which are responsible for contraction of the muscle tissue.
 Additionally the cells contain the \emph{sarcoplastic reticulum}, which is a
-membrane-enclosed region, mainly for storing \ce{Ca2+} ions.
+membrane-enclosed region, mainly for storing \ce{Ca^{2+}} ions.
 
 In longitudinal direction \emph{interlacing disks} join the cells together
 and via the \emph{gap junctions} allow propagation of action potentials.
@@ -132,8 +132,7 @@ Imposing conservation of current:
 \end{equation*}
 (where $\beta$ is a scaling constant with units \si{\per\metre}), one finds
 after some calculations:
-\begin{subequations}
-\begin{align}
+\begin{align*}
     \nabla\cdot\myten{G_i}(\nabla{V}+\nabla\Phi_e)
     &=\beta\left(C\,\dv{V}{t}+I_{\mathrm{ion}}\right)
     \label{eq:i}
@@ -141,8 +140,7 @@ after some calculations:
     \nabla\cdot\left((\myten{G_i}+\myten{G_e})\,\nabla\Phi_e\right)
     &=-\nabla\cdot(\myten{G_i}\,\nabla{V})
     \label{eq:ii}
-\end{align}
-\end{subequations}
+\end{align*}
 
 Now one has a system of two coupled PDEs with \eqref{eq:i} being parabolic
 and \eqref{eq:ii} being elliptic, which is rather difficult to solve.

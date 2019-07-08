@@ -60,9 +60,47 @@ threshold (5\% and 95\% of the maximal potential respectively).
 The length of the domain was varied between 25 and 200 and for each value ten
 measurements were recorded by letting the peak pass through the domain ten times after
 reaching a stable form. Then average and standard deviation were computed and
-plotted.
+plotted (see \figref{fig:alpha2}).
 
-\todo{plots}
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{.3\textwidth}
+        \includegraphics[width=\textwidth]{alpha-measurements-cv}
+        \vspace{-\baselineskip}
+        \label{fig:alpha-measure-cv}
+        \caption{conduction velocity}
+    \end{subfigure}
+    \vspace{\baselineskip}
+    ~
+    \begin{subfigure}[b]{.3\textwidth}
+        \includegraphics[width=\textwidth]{alpha-measurements-bcl}
+        \vspace{-\baselineskip}
+        \label{fig:alpha-measure-bcl}
+        \caption{base cycle length}
+    \end{subfigure}
+    ~
+    \begin{subfigure}[b]{.3\textwidth}
+        \includegraphics[width=\textwidth]{alpha-measurements-apd}
+        \vspace{-\baselineskip}
+        \label{fig:alpha-measure-apd}
+        \caption{action potential duration}
+    \end{subfigure}
+    \begin{subfigure}[b]{.3\textwidth}
+        \includegraphics[width=\textwidth]{alpha-measurements-rt}
+        \vspace{-\baselineskip}
+        \label{fig:alpha-measure-rt}
+        \caption{rise time}
+    \end{subfigure}
+    ~
+    \begin{subfigure}[b]{.3\textwidth}
+        \includegraphics[width=\textwidth]{alpha-measurements-vmax}
+        \vspace{-\baselineskip}
+        \label{fig:alpha-measure-vmax}
+        \caption{max peak height}
+    \end{subfigure}
+    \label{fig:alpha2}
+    \caption{All measured quantities plotted against the domain length}
+\end{figure}
 
 Of course, the BCL increases linearly with the maximal length.  The CV and
 maximal peak height have smaller values for small lengths, which corresponds to
@@ -80,12 +118,17 @@ Concerning the theoretical estimated relationship between CV and rise time
     CV\approx\sqrt{\frac{\eta}{2\tau}}(1-2\alpha)
     \label{eq:cvrt}
 \end{equation}
-the measured values were plotted together with the curve given by
-\eqref{eq:cvrt} (where $\alpha=0.17$ was obtained by fitting the measured data
-to the formula using a non-linear least squared method; this is justified,
-since $\alpha$ acts only as an offset).
+the measured values were plotted in \figref{fig:alpha-cv-rt} together with the
+curve given by \eqref{eq:cvrt} (where $\alpha=0.17$ was obtained by fitting the
+measured data to the formula using a non-linear least squared method; this is
+justified, since $\alpha$ acts only as an offset).
 
-\todo{cv-rt plot}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=.65\textwidth]{alpha-measurements-cv-rt}
+    \label{fig:alpha-cv-rt}
+    \caption{comparison of measurement and estimate}
+\end{figure}
 
 In order to (naively) quantize this result, both curves were approximated as
 linear and a linear regression was computed (see table~\ref{tab:linreg}).
@@ -138,9 +181,14 @@ x-direction were set to 1.
 Running the simulation, an action potential quickly develps and repeatedly
 passes through the domain, which mimics a constant rate of pulses. Because of
 the Dirichlet conditions the action potential on the edges is pulled to zero,
-causing some kind of tail.
+causing some kind of tail (as shown in \figref{fig:pulse}).
 
-\todo{channel image}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=.75\textwidth]{fenton-cont-pulse}
+    \label{fig:pulse}
+    \caption{Pulse in channel setup}
+\end{figure}
 
 
 \subsubsection{Spiral Excitation}
@@ -161,10 +209,54 @@ center. Upon this meeting the croissant becomes a pretzel which runs away in a
 circular fashion and the then slightly inwards turned edges generate a new
 croissant-shaped pulse which undergoes the same process.
 
-\todo{spiral excitation series}
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{.45\textwidth}
+        \includegraphics[width=\textwidth]{spiral-80}
+        \vspace{-\baselineskip}
+        \caption{2400 steps}
+    \end{subfigure}
+    \begin{subfigure}[b]{.45\textwidth}
+        \includegraphics[width=\textwidth]{spiral-81}
+        \vspace{-\baselineskip}
+        \caption{2430 steps}
+    \end{subfigure}
+    \begin{subfigure}[b]{.45\textwidth}
+        \includegraphics[width=\textwidth]{spiral-84}
+        \vspace{-\baselineskip}
+        \caption{2520 steps}
+    \end{subfigure}
+    \begin{subfigure}[b]{.45\textwidth}
+        \includegraphics[width=\textwidth]{spiral-87}
+        \vspace{-\baselineskip}
+        \caption{2610 steps}
+    \end{subfigure}
+    \begin{subfigure}[b]{.45\textwidth}
+        \includegraphics[width=\textwidth]{spiral-100}
+        \vspace{-\baselineskip}
+        \caption{3000 steps}
+    \end{subfigure}
+    \begin{subfigure}[b]{.45\textwidth}
+        \includegraphics[width=\textwidth]{spiral-110}
+        \vspace{-\baselineskip}
+        \caption{3300 steps}
+    \end{subfigure}
+    \begin{subfigure}[b]{.45\textwidth}
+        \includegraphics[width=\textwidth]{spiral-120}
+        \vspace{-\baselineskip}
+        \caption{3600 steps}
+    \end{subfigure}
+    \begin{subfigure}[b]{.45\textwidth}
+        \includegraphics[width=\textwidth]{spiral-130}
+        \vspace{-\baselineskip}
+        \caption{3900 steps}
+    \end{subfigure}
+    \label{fig:spiral}
+    \caption{Image series of spiral excitation due to well-timed perturbation}
+\end{figure}
 
 For the given setup, the sweet spot in insert this perturbation lies around
-2430 integration steps.
+2430 integration steps (see \figref{fig:spiral}).
 
 While with the Fenton model each succeeding spiral is slightly damped causing
 the process to be extinguished completely after a finite number of iterations,
@@ -186,9 +278,59 @@ breaks up (in the Fenton model this is due to the interaction of the action
 potential of the tip with the inactivation gates in the wake). This process
 starts to successively generate new spirals. It amplifies itself, soon causing
 multiple spirals to be present at once, which spread out until the whole domain
-is disruptively filled with small and rather fast moving spirals.
+is disruptively filled with small and rather fast moving spirals (see
+\figref{fig:breakup}).
 
-\todo{breakup image series}
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{.3\textwidth}
+        \includegraphics[width=\textwidth]{breakup-1}
+        \vspace{-\baselineskip}
+        \caption{50 steps}
+    \end{subfigure}
+    \begin{subfigure}[b]{.3\textwidth}
+        \includegraphics[width=\textwidth]{breakup-6}
+        \vspace{-\baselineskip}
+        \caption{300 steps}
+    \end{subfigure}
+    \begin{subfigure}[b]{.3\textwidth}
+        \includegraphics[width=\textwidth]{breakup-10}
+        \vspace{-\baselineskip}
+        \caption{500 steps}
+    \end{subfigure}
+    \begin{subfigure}[b]{.3\textwidth}
+        \includegraphics[width=\textwidth]{breakup-20}
+        \vspace{-\baselineskip}
+        \caption{1000 steps}
+    \end{subfigure}
+    \begin{subfigure}[b]{.3\textwidth}
+        \includegraphics[width=\textwidth]{breakup-40}
+        \vspace{-\baselineskip}
+        \caption{2000 steps}
+    \end{subfigure}
+    \begin{subfigure}[b]{.3\textwidth}
+        \includegraphics[width=\textwidth]{breakup-60}
+        \vspace{-\baselineskip}
+        \caption{3000 steps}
+    \end{subfigure}
+    \begin{subfigure}[b]{.3\textwidth}
+        \includegraphics[width=\textwidth]{breakup-90}
+        \vspace{-\baselineskip}
+        \caption{4500 steps}
+    \end{subfigure}
+    \begin{subfigure}[b]{.3\textwidth}
+        \includegraphics[width=\textwidth]{breakup-120}
+        \vspace{-\baselineskip}
+        \caption{6000 steps}
+    \end{subfigure}
+    \begin{subfigure}[b]{.3\textwidth}
+        \includegraphics[width=\textwidth]{breakup-150}
+        \vspace{-\baselineskip}
+        \caption{7500 steps}
+    \end{subfigure}
+    \label{fig:breakup}
+    \caption{Image series of spiral wave breakup due to tip-wake interaction}
+\end{figure}
 
 With the Aliev-Panfilov model the aforementioned initial conditions generate
 an ever-growing spiral without any disruptive behaviour.

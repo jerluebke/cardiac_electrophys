@@ -85,10 +85,10 @@ dt      = 0.01
 tmax    = 50.
 t       = np.arange(0., tmax, dt)
 steps   = t.size
-#  Ip      = np.zeros_like(t)
+Ip      = np.zeros_like(t)
 #  Ip[int(20./dt):int(80./dt)] += 10.
-Ip      = 10.*np.ones_like(t)
-V_0 = -30.
+Ip      = 20.*np.ones_like(t)
+V_0 = -7.
 
 # initialize result arrays
 V = np.zeros(steps)

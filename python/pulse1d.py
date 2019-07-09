@@ -316,8 +316,8 @@ def animation_of_propagating_action_potential():
 
 
 if __name__ == '__main__':
-    md = measurements_for_varying_xmax()
-    #  fig, anim = animation_of_propagating_action_potential()
+    #  md = measurements_for_varying_xmax()
+    fig, anim = animation_of_propagating_action_potential()
 
     plt.show()
 

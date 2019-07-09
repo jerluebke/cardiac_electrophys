@@ -149,16 +149,16 @@ if __name__ == '__main__':
 
     alpha = Alpha(**PARAMS)
     alpha.vary_param('a', [.1, .125, .15, .175, .199, .2])
-    
+
     alpha = Alpha(**PARAMS)
     alpha.vary_param('k', [4., 6., 8., 10., 12., 14.])
-    
+
     alpha = Alpha(**PARAMS)
     alpha.vary_param('\epsilon_0', [1e-5, 1e-4, 2e-3, 1e-1, 1.])
-    
+
     alpha = Alpha(**PARAMS)
     alpha.vary_param('\mu_1', [.05, .1, .2, .5, 1., 2.])
-    
+
     alpha = Alpha(**PARAMS)
     alpha.vary_param('\mu_2', [.1, .3, 1., 2., 5.])
 

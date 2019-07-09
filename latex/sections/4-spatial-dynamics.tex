@@ -19,6 +19,8 @@ condition:
 
 
 \subsection{On a one-dimensional domain}
+\label{sec:1d}
+\todo{instability for high CV}
 The simulation was performed using the Aliev-Panfilov model. For the
 calculations two one-dimensional arrays were used, representing the values of the membrane
 potential and the relaxation variable along a discretized line, the length of
@@ -37,9 +39,12 @@ where $G_V$ and $G_W$ are the right hand sides in \eqref{eq:ap_pot} and
 
 After sufficient steps for the peak of the action potential to develop, the
 von-Neumann boundary conditions are replaced by periodic boundary
-conditions, which mimics a regular succession of peaks at a constant rate.
-This rate can be modified by changing the length of the line along which the
-values are computed.
+conditions, which mimics a one-dimensional conducting ring along which an
+action potential travels.
+
+% a regular succession of peaks at a constant rate.
+% This rate can be modified by changing the length of the line along which the
+% values are computed.
 
 When performing the simulation for different lengths, one finds several
 quantities of interest:
@@ -103,9 +108,8 @@ plotted (see \figref{fig:alpha2}).
 \end{figure}
 
 Of course, the BCL increases linearly with the maximal length.  The CV and
-maximal peak height have smaller values for small lengths, which corresponds to
-a high rate of succeeding action potentials. With longer lengths, \ie~lower
-rates, those values first increase strongly in value and then seem to strive
+maximal peak height have smaller values for small lengths. With longer lengths
+those values first increase strongly in value and then seem to strive
 asymptotically against some upper limit (CV 0.0582, max peak: 0.9931).  The APD
 seems to behave similarly, but to verify its asymptotic character, a closer
 investigation is required.  The rise time is maximal for small lengths, then
@@ -170,6 +174,7 @@ this parameter corresponds simply to a rescaling of the system.
 
 
 \subsubsection{Channel}
+\label{sec:channel}
 One considers a $64\times256$ grid with Dirichlet boundary conditions imposed
 along the long side (\ie~the x-direction) and periodic boundary conditions
 along the short side (\ie~the y-direction).
@@ -192,6 +197,7 @@ causing some kind of tail (as shown in \figref{fig:pulse}).
 
 
 \subsubsection{Spiral Excitation}
+\label{sec:spiral1}
 Now one considers a $128\times512$ grid with von-Neumann boundary conditions
 imposed on all sides. The initial conditions to generate the first pulse are
 the same as described above. Because of the boundary conditions, the pulse is
@@ -265,6 +271,7 @@ kind of behaviour and instead seem to go on indefinitely.
 
 
 \subsubsection{Spiral Wave and Breakup}
+\label{sec:spiral2}
 Finally one considers a $256\times512$ grid with von-Neumann boundary
 conditions on all sites. The initial conditions are given by a stripe of
 excited membrane potential which only reaches into the domain by some extend,

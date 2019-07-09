@@ -657,7 +657,7 @@ fibrillation.
 The only way to stop (the otherwise fatal) ventricular fibrillation is to
 apply a high energy electrically shock to depolarize all (or a
 critical mass) of cardiac tissue (defibrillation). After the cells have
-repolarized, they can be governed again by the AV nodes pacemaker cells.
+repolarized, they can be governed again by the SA nodes pacemaker cells.
 
 ## 6.5. Further Outlook
 > TODO

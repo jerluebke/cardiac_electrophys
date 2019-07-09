@@ -331,7 +331,7 @@ def channel(i):
     anim = animation.FuncAnimation(
         fig, step, frames=sim.integrate(xbound='dirichlet'), interval=20,
         blit=True, repeat=False)
-    #  anim.save('channel-vid-params-%d.mp4', writer=FFWriter, dpi=300)
+    #  anim.save('channel-vid-params-%d.mp4' % i, writer=FFWriter, dpi=300)
 
     return sim, fig, anim
 
@@ -342,7 +342,7 @@ def spiral_excitation(i, delay):
 
     if timed correctly, this induces spiral waves in the wake of the inital
     wave front"""
-    sim = FCHE_2D(128, 512, 1., 500, .3, 30, **PARAM_SETS[i])
+    sim = FCHE_2D(128, 512, 1., 4000, .3, 30, **PARAM_SETS[i])
     sim.V[:,10:30] = .3
     sim.v[:,20:40] = 1.
     sim.w[:,10:30] = 1.
@@ -372,6 +372,11 @@ def spiral_excitation(i, delay):
         V_img.set_data(a)
         #  V_img.set_clim(a.min(), a.max())
 
+        #  if i > 50 and i % 10 == 0:
+        #      print('saving image, frame %d' % i)
+        #      plt.imsave('img/spiral-%d.png' % i, V_img.get_array().data,
+        #                 vmin=-80, vmax=25, cmap=plt.get_cmap('plasma'), dpi=300)
+
         return V_img,
 
     #  FFWriter = animation.FFMpegWriter(fps=10)
@@ -386,7 +391,7 @@ def spiral_excitation(i, delay):
 
 def spiral_wave(i):
     # nice results with param set 1
-    sim = FCHE_2D(256, 512, 1., 10_000, .3, **PARAM_SETS[i])
+    sim = FCHE_2D(256, 512, 1., 1000, .3, **PARAM_SETS[i])
     sim.V[80:120,:128]  = .3
     sim.v[100:130,:128] = 1.
     sim.w[80:120,:128]  = 1.
@@ -405,25 +410,33 @@ def spiral_wave(i):
     fig.colorbar(V_img, cax=cax)
 
     def step(arg):
+        #  i, arg = args
         V_img.set_data(arg)
+
+        #  if i < 10:
+        #      print('saving image, frame %d' % i)
+        #      plt.imsave('img/spiral-%d.png' % i, V_img.get_array().data,
+        #                 vmin=-80, vmax=25, cmap=plt.get_cmap('plasma'), dpi=300)
+
         return V_img,
 
-    #  FFWriter = animation.FFMpegWriter(fps=10)
+    FFWriter = animation.FFMpegWriter(fps=10)
     anim = animation.FuncAnimation(
         fig, step,
         frames=sim.integrate(ybound='neumann'),
+        #  frames=enumerate(sim.integrate(ybound='neumann')),
         #  frames=sim.integrate(xbound='periodic'),
-        interval=20, blit=True, # repeat=False,
-        cache_frame_data=False)
-    #  anim.save('breakup-%d-04.mp4' % i, writer=FFWriter, dpi=300)
+        interval=20, blit=True, repeat=False,)
+        #  cache_frame_data=False)
+    anim.save('breakup-vid-params-%d-tmp.mp4' % i, writer=FFWriter, dpi=300)
 
     return sim, fig, anim
 
 
 if __name__ == "__main__":
-    plot_single_cell()
+    #  plot_single_cell()
 
-    #  s, f, a = channel(4)
+    s, f, a = channel(4)
     #  s, f, a = spiral_excitation(4, 81)      # plot_interval = 30
     #  s, f, a = spiral_wave(1)
 

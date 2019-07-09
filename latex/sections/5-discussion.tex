@@ -1,3 +1,56 @@
+\section{Physiological Interpretation}
+\label{sec:phys}
+\subsection{One-dimensional ring}
+The one-dimensional ring described in section~\ref{sec:1d} can be interpreted
+as a conducting fibre of the hearts conduction system, through which a constant
+rate of action potentials passes. This rate can be varied by varying the length
+of the ring. While this approach seems rather simplistic, it can be used to
+understand the effects of tachycardia (\ie~abnormal high heart rates) on the
+characteristics of the single action potentials: the peak is more shallow
+(longer rise time), does not reach its full height, has a shorter duration and
+is being conducted somewhat slower.
+
+Such deviations from the regular behaviour can express itself as arrhythmia and
+have a significant impact on the well-being of affected person.
+
+
+\subsection{Channel}
+The situation depicted in section~\ref{sec:channel} of a confined channel could
+be used to describe a bundle of cells belonging to the electrical conducting
+system of the heart, which transmits action potentials at a constant rate to
+some target tissue area, in order to trigger its contraction.
+
+While with the default configuration this mimics a properly working propagation
+of action potentials, one can also observe above described phenomena when
+shortening the length of the domain.
+
+
+\subsection{Spiral waves}
+In a healthy heart the action potential meant to trigger contraction is
+propagating homogeneously through tissue. If now due to some pathological
+condition some regions in the cardiac tissue have different electrical
+conductivities or do not conduct at all (scar tissue), the action potential
+might travel around these obstacles eventually hitting its own wake and causing
+local depolarization deviating from the beat given by the SA node:
+\emph{re-entrant arrhythmia}. Such phenomena can cause ventricular tachycardia
+or atrial flutter and might develop into ventricular or atrial fibrillation.
+The only way to stop (the otherwise fatal) ventricular fibrillation is to
+apply a high energy electrically shock to depolarize all (or a
+critical mass) of cardiac tissue (defibrillation). When the cells have
+repolarized, they can again be governed by the pacemaker cells of the SA node.
+
+Those aforementioned phenomena resemble spiral waves, which in reality occur
+due to heterogeneity of the tissue. On a simplified homogeneous domain, one can
+generate such spiral waves \eg~by delivering a single impulse in the wake of a
+propagating action potential wave (see section~\ref{sec:spiral1}) or by
+defining an initial wave with a loose end (see section~\ref{sec:spiral2}).
+While the spiral waves discussed in section~\ref{sec:spiral1} can be
+interpreted as ventricular tachycardia, the disruptive and uncoordinated
+dynamics seen in section~\ref{sec:spiral2} resemble ventricular fibrillation
+(see also fig.~38 in \cite{Cherry2008}).
+
+
 \section{Discussion}
+
 
 % vim: set ff=unix tw=79 sw=4 ts=4 et ic ai :

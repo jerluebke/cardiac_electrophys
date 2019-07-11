@@ -1,21 +1,21 @@
 \newcommand{\Vtilde}{\ensuremath{\tilde{V}}}
 
 \section{Three Models}
-In this section I am going to describe three approaches -- out of an
-abundance of available models (\url{www.cellml.org}) -- which can be used to
-describe the dynamics of the membrane potential.
+This section is going to describe three approaches -- out of an abundance of
+available models (\url{www.cellml.org}) -- which can be used to describe the
+dynamics of the membrane potential.
 
 \subsection{Hodgkin \& Huxley (1952)}
 This model was developed by A.~L.~Hodgkin and A.~F.~Huxley to fit
 measurements taken on a giant squid axon prior to detailed knowledge about
 the biophysical mechanisms being available.
 
-The membrane current density is modeled as the sum of Sodium, Potassium and
-a leakage current, each obeying Ohm's Law:
-\begin{gather}
+The membrane current density in \eqref{eq:cap} is modeled as the sum of Sodium,
+Potassium and a leakage current, each obeying Ohm's Law:
+\begin{gather*}
     I_m = \sum_{s}I_{s}=I_{\mathrm{Na}}+I_{\mathrm{K}}+I_{\mathrm{leak}} \\
-    I_s = g_s\,(V-V_s) \nonumber
-\end{gather}
+    I_s = g_s\,(V-V_s)
+\end{gather*}
 where the specific conductivites are described by dimensionless gating
 variables $n, m, h\in[0,1]$:
 \begin{equation*}
@@ -39,7 +39,7 @@ The respective rest potentials and maximal specific conductivities were measured
     \end{tabular}
 \end{table}
 
-The gating variables obey the following ODEs:
+And the gating variables obey the following ODEs:
 \begin{subequations}
 \begin{align}
     \dv{n}{t}&=\alpha_{n}\,(1-n)-\beta_{n} \label{eq:n} \\
@@ -47,6 +47,7 @@ The gating variables obey the following ODEs:
     \dv{h}{t}&=\alpha_{h}\,(1-h)-\beta_{h} \label{eq:h}
 \end{align}
 \end{subequations}
+
 with ($\Vtilde=V/\si{\milli\volt}$):
 \begin{align*}
     \alpha_{n}&=\SI{.01}{\per\milli\second}
@@ -66,7 +67,7 @@ with ($\Vtilde=V/\si{\milli\volt}$):
 \end{align*}
 
 Thus, one has to solve a system of four first-order uncoupled ODEs
-(\ref{eq:cap}, \ref{eq:n}, \ref{eq:m}, \ref{eq:h}).
+(\ref{eq:cap},~\ref{eq:n},~\ref{eq:m},~\ref{eq:h}).
 
 
 \subsection{Aliev \& Panfilov (1996)}
@@ -96,8 +97,8 @@ Here one has to solve two coupled first-order ODEs.
 Yet another model to be introduced here is again based on the capacitor
 equation \eqref{eq:cap}. Unlike the models presented above, this approach
 allows to easily investigate chaotic wave breakup mechanisms (its technical
-meaning and possible physiological interpretation will be discussed in section
-and section \todo{add section references} respectively).
+meaning and possible physiological interpretation will be discussed in
+section~\ref{sec:2d} and section~\ref{sec:phys}, respectively).
 
 The membrane current density is modeled as the sum of the following
 phenomenological current densities:
@@ -148,7 +149,7 @@ The two gate variables governing the currents:
 
 And finally the parameters:
 \begin{itemize}
-    \item $\tau_{v+}, \tau_{v-,1}, \tau_{v-,2}$: opening (+) and closing (-)
+    \item $\tau_{v+}, \tau_{v-,1}, \tau_{v-,2}$: opening (+) and closing (--)
         times of the fast variable $v$
     \item $\tau_{w+}, \tau_{w-}$: opening and closing times of the slow
         variable $w$

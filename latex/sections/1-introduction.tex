@@ -2,54 +2,57 @@
 The human heart is a fascinating apparatus, which does its work in a
 constant and reliable fashion - usually without disruption - for the whole
 of a persons life. To put things into perspective, the heart of an average
-human being performs \\
+human being performs
+\begin{center}
 \begin{tabular}[t]{C R l}
             & 70    & (typical rest pulse per minute) \\
     \times  & 1440  & (minutes per day) \\
     \times  & 365   & (days per year) \\
     \times  & 80    & (estimated average human life time) \\
     \sim    & \mathbf{3\times10^9} & beats per life time,
-\end{tabular} \\
-while a typical car engine performs \\
+\end{tabular}
+\end{center}
+while a typical car engine performs
+\begin{center}
 \begin{tabular}[t]{C R l}
             & \num{300000}  & (km drive during the cars life time) \\
     /       & 50    & (km/h, average speed) \\
     \times  & 60    & (minutes per hour) \\
     \times  & \num{2200}    & (revolutions per minute) \\
     \sim    & \mathbf{8\times10^8} & duty cycles per life time.
-\end{tabular} \\
+\end{tabular}
+\end{center}
 
 Investigating the hearts physical working principle poses an interesting
-challenge with undoubtedly many relevant applications such as
-gaining a deeper understanding of and developing more advanced treatments
-for - many times dangerous - arrhythmia.
+challenge with undoubtedly many relevant applications such as gaining a deeper
+understanding of and developing more advanced treatments for often dangerous
+arrhythmia.
 
 The heart muscles basic functionality is rhythmically contracting itself
-triggered by electrical signals, which are being conducted by the heart
-muscle cells (the cardiomyocytes) themselves (this is the remarkable thing
-here, because usually this task is being taken care of by neural cells),
-which means that this kind of tissue combines the ability to both perform
-mechanical work and conduct electrical signals.
+triggered by electrical signals, which are being conducted by the heart muscle
+cells (the cardiomyocytes) themselves: the cardiac tissue combines the ability
+to both perform mechanical work and conduct electrical signals.  This is very
+remarkable, because usually these tasks are separately take care of by muscle
+and neural cells, respectively.
 
-Going a little more into detail: pacemaker cells (specialized
-cardiomyocytes) in the SA-node rhythmically generate action potential
-which travel at about \SIrange{.05}{1}{\metre\per\second} to the AV-node and
-from there after a
-delay at about \SIrange{2}{4}{\metre\per\second} through the ventricular
-bundles and the Purkinje fibres. Ultimately those action potentials cause the
-contraction of the regions of heart tissue controlled by the respective bundles
-of conduction cells.
+Going a little more into detail: pacemaker cells (specialized cardiomyocytes)
+in the SA-node rhythmically generate action potentials which travel at about
+\SIrange{.05}{1}{\metre\per\second} to the AV-node and from there after a delay
+at about \SIrange{2}{4}{\metre\per\second} through the His and ventricular
+bundles and the Purkinje fibres, eventually reaching the intended tissue and
+causing its contraction.
 
 
 \subsection{Structure of the Cardiomyocytes}
 For a better understanding it is helpful to take a closer look at the
 microscopic structure of the cardiomyocytes:
 
-Cardiomyocytes are tubular cells enclosed by the \emph{sarcolemma} (a double
-lipid-layered membrane), containing chains of \emph{myofibril} (fibres composed
-of long proteins), which are responsible for contraction of the muscle tissue.
-Additionally the cells contain the \emph{sarcoplastic reticulum}, which is a
-membrane-enclosed region, mainly for storing \ce{Ca^{2+}} ions.
+Cardiomyocytes are tubular cells, which are enclosed by the \emph{sarcolemma}
+(a double lipid-layered membrane) and contain chains of \emph{myofibril}
+(fibres composed of long proteins), which are responsible for contraction of
+the muscle tissue.  Additionally the cells contain the \emph{sarcoplastic
+reticulum}, which is a membrane-enclosed region, mainly for storing
+\ce{Ca^{2+}} ions.
 
 In longitudinal direction \emph{interlacing disks} join the cells together
 and via the \emph{gap junctions} allow propagation of action potentials.
@@ -60,7 +63,7 @@ whole of the single cells behaves like a single coordinated unit.
 \subsection{Modeling the membrane potential}
 Now the interior and exterior (\ie~the intermediate space between
 neighbouring cells) regions of a cells exhibit different concentrations of
-various ion species (this imbalance is being maintained by special ion
+various ion species (this imbalance is being maintained by specialized ion
 pumps and gates in the cell membrane), which results in a voltage between
 those regions: the membrane potential $V=\Phi_i-\Phi_e$, which in the rest
 case is equal to some rest potential $V_{\mathrm{rest}}$.
@@ -71,7 +74,6 @@ the concentration difference of the ions between interior and exterior
 cell regions to invert resulting in a large upswing of the membrane
 potential. This process is called \emph{depolarization} and the peak of the
 membrane potential is called \emph{action potential}.
-
 After reaching this peak the gates close again and the pumps recreate the
 prior concentration difference which causes the membrane potential to
 return to the rest value (\emph{repolarization}).
@@ -99,9 +101,9 @@ membrane current densities $I_s$.
 \subsection{Developing a Continuum Description}
 \label{sec:contdescr}
 At a microscopic level the propagation of action potential is a discrete
-process (from cell to cell). However looking at tissue at sufficiently
-large scales, it can be viewed as continuous (\textrightarrow~functional
-syncytium). It is important to note the anisotropic nature of this process:
+process (from cell to cell). However looking at tissue at sufficiently large
+scales, it can be viewed as continuous (\textrightarrow~\emph{functional
+syncytium}). It is important to note the anisotropic nature of this process:
 the tissue exhibits different conductivities in longitudinal and transversal
 direction with respect to the myofibril.
 
@@ -132,7 +134,8 @@ Imposing conservation of current:
 \end{equation*}
 (where $\beta$ is a scaling constant with units \si{\per\metre}), one finds
 after some calculations:
-\begin{align*}
+\begin{subequations}
+\begin{align}
     \nabla\cdot\myten{G_i}(\nabla{V}+\nabla\Phi_e)
     &=\beta\left(C\,\dv{V}{t}+I_{\mathrm{ion}}\right)
     \label{eq:i}
@@ -140,7 +143,8 @@ after some calculations:
     \nabla\cdot\left((\myten{G_i}+\myten{G_e})\,\nabla\Phi_e\right)
     &=-\nabla\cdot(\myten{G_i}\,\nabla{V})
     \label{eq:ii}
-\end{align*}
+\end{align}
+\end{subequations}
 
 Now one has a system of two coupled PDEs with \eqref{eq:i} being parabolic
 and \eqref{eq:ii} being elliptic, which is rather difficult to solve.

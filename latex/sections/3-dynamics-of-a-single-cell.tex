@@ -40,7 +40,7 @@ completely open ($h(t=0)=0.99$); however, the \ce{Na+} current is at this point
 suppressed by the closed $m$ gate. The $h$ gate slowly closes up to
 $t\approx\SI{5}{\milli\second}$ and then swings down more rapidly, while at the same
 time the $m$ gate opens strongly and allows for influx of \ce{Na+} ions
-(interesetingly yhe \ce{Na+} current exhibits a small seperate peak at
+(interestingly the \ce{Na+} current exhibits a small seperate peak at
 $t\approx\SI{5}{\milli\second}$ before rising up to its full strength). This
 causes the membrane potential to rise up and become strongly positive. Shortly
 after the quick opening of the $m$ gate, the \ce{K+} gate $n$ also opens,
@@ -88,14 +88,15 @@ to the physical time via $t_{\mathrm{phys}}/\si{\milli\second}=12.9\,t$.
 \vspace{\baselineskip}
 The integration was performed for \SI{60}{\stu} (simulationt time units,
 \ie~$t_{\mathrm{phys}}=\SI{774}{\milli\second}$) with a time step of
-$\Delta{t}=\SI{.01}{\stu}$ (\ie~6000 integration steps) and an initial
-excitement of the potential to $V_0=\SI{.2}{svu}$ (simulation voltage
-units, \ie~$V_{\mathrm{phys},0}=\SI{-60}{\milli\volt}$).
+$\Delta{t}=\SI{.01}{\stu}$, resulting in 6000 integration steps and an initial
+excitement of the potential to $V_0=\SI{.2}{svu}$ (simulation voltage units,
+\ie~$V_{\mathrm{phys},0}=\SI{-60}{\milli\volt}$).
 
 Upon an excitement which surpasses some threshold, the action potential quickly
-raises up to its maximal value. The relaxation variable begins raising, too,
-slowly at first, but gradually growing faster until it steeply reaches its
-peak, which pulls the action potential back to its resting value.
+raises up to its maximal value and decreases rather weakly at first, thus
+forming a plateau. The relaxation variable begins raising, too, slowly at
+first, but gradually growing faster until it steeply reaches its peak, which
+pulls the action potential back to its resting value.
 
 \begin{figure}[h]
     \centering
@@ -117,10 +118,10 @@ peak, which pulls the action potential back to its resting value.
     \caption{Results of integrating the A\&P model}
 \end{figure}
 
-The model dynamics are governed by a set of five parameteres $a, k, \epsilon_0,
+The model dynamics are governed by a set of five parameters $a, k, \epsilon_0,
 \mu_1\text{ and }\mu_2$. They are phenomenological in their nature and therefor
 difficult to interpret. A quick study which varies each parameter while holding
-the others constant is found in the appendix\todo{ref}.
+the others constant is found in the appendix (\ref{app:ap-params}).
 
 
 \subsection{Fenton et al}
@@ -139,7 +140,7 @@ Aliev-Panfilov model, with the difference that the peak does not start
 decreasing right after the excitement but rather shows a slight bump in the
 plateau.
 Just like the Hodgkin-Huxley model, the Fenton model is  based on an ionic
-description, which allows to comprehed the action potential dynamics based on
+description, which allows to comprehend the action potential dynamics based on
 underlying gate and current processes.
 
 \begin{figure}[h]

@@ -660,7 +660,10 @@ critical mass) of cardiac tissue (defibrillation). After the cells have
 repolarized, they can be governed again by the SA nodes pacemaker cells.
 
 ## 6.5. Further Outlook
-> TODO
+ * heterogeneous domain
+    * simply local differences in the conductivity
+    * more complex geometries resembling the shape of the heart
+ * external stimuli (considering anisotropy)
 
 
 # A. Appendix

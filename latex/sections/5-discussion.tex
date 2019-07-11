@@ -31,13 +31,14 @@ propagating homogeneously through the tissue. If now due to some pathological
 condition some regions in the cardiac tissue have different electrical
 conductivities or do not conduct at all (scar tissue), the action potential
 might travel around these obstacles eventually hitting its own wake and causing
-local depolarization deviating from the beat given by the SA node.
-Such phenomena are known as \emph{re-entrant arrhythmia} and can cause ventricular tachycardia
-or atrial flutter and might develop into ventricular or atrial fibrillation.
-The only way to stop (the otherwise fatal) ventricular fibrillation is to
-apply a high energy electrically shock to depolarize all (or a
-critical mass) of cardiac tissue (defibrillation). When the cells have
-repolarized, they can again be governed by the pace given by the SA node.
+local depolarization deviating from the beat given by the SA node.  Such
+phenomena are known as \emph{re-entrant arrhythmia} and can cause ventricular
+tachycardia or atrial flutter and might develop into ventricular or atrial
+fibrillation.  The only way to stop (the otherwise fatal) ventricular
+fibrillation is to apply a high energy electrically shock to depolarize all (or
+a critical mass) of cardiac tissue (\textrightarrow~\emph{defibrillation}).
+When the cells have repolarized, they can again be governed by the pace given
+by the SA node.
 
 Those aforementioned phenomena resemble spiral waves, which in reality occur
 due to heterogeneity of the tissue. On a simplified homogeneous domain, one can
@@ -51,6 +52,60 @@ dynamics seen in section~\ref{sec:spiral2} resemble ventricular fibrillation
 
 
 \section{Discussion}
+\subsection{The Models}
+\subsubsection{Hodgkin \& Huxley}
+The first-discussed model is very intuitive and gives a good understanding of
+the underlying process, since it is close to the physical background (even
+though the details were unknown at that time). Even hyperpolarization is
+included.
+
+The results presented here were obtained with a time step of
+$\Delta{t}=\SI{.01}{\milli\second}$. Reasonable results were possible with
+larger time steps up to $\Delta{t}=\SI{.055}{\milli\second}$, however at this
+point the results already included artifacts due to numerical inaccuracies.
+
+While the form of the action potential rather corresponds to neural cells and
+not cardiomyocytes, this could perhaps be achieved by fitting the parameters
+differently. The additional source current causing repeated depolarization
+can be used to describe \todo{translate}dauerhaft firing neurons or -- with
+appropriate parameters -- pacemaker cells in the SA node.
+
+\subsubsection{Aliev \& Panfilov}
+While this model is rather difficult to interpret, since it is intended to
+only phenomenologically reproduce the observed dynamics, it allows one to
+perform larger spatial tissue simulations with reduced \todo{translate}Aufwand.
+
+From this models simulation the measurements of the action potential properties
+for varying rate were recorded, which were compared to a theoretical estimate
+relating conduction velocity and rise time \eqref{eq:cvrt}.
+While the gross form of the theoretical estimate and the measured data is
+similar, a rather clear deviation should be acknowledged. Quantitatively
+-- from the compared slopes -- a relative error of 48\% is found. In order to
+make a clear statement whether the error is due to inaccuracies of the equation
+or of the used model, a more in-depth investigation would be helpful.
+
+\subsubsection{Fenton et al}
+This model was introduced, because the previously discussed A\&P model lacks
+the ability to depict more complex (and interesting) mechanisms. This comes
+with the price of a higher computational demand.
+
+It is per se a phenomenological model, yet the used quantities (\emph{currents}
+and \emph{gates}) resemble the underlying physics closely. The parameters have
+physical meaning and are designed in such a way, that allows to influence the
+resulting behaviour purposefully.
+
+\subsection{Further Outlook}
+Throughout this work all simulations were performed with a simple Euler scheme.
+While this already gives meaningful results, one could alternatively apply more
+sophisticated ways such as a semi-implicit Crank-Nicolson scheme or
+multi-step Runge-Kutta methods. This would allow for larger time steps (making
+the simulations computationally cheaper) while maintaining accuracy.
+
+It might be interesting to look at a heterogeneous domain, perhaps simply with
+local differences in the conductivity or with a more complex geometry
+resembling the shape of the human heart. One could also set up a simulation
+based on a bi-domain description with anisotropic conductivities and
+investigate external stimuli such as defibrillation.
 
 
 % vim: set ff=unix tw=79 sw=4 ts=4 et ic ai :

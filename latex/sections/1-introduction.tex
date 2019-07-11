@@ -130,14 +130,14 @@ Imposing conservation of current:
 \si{\ampere\per\metre\cubed}), and rewriting the capacitor equation
 \eqref{eq:cap}:
 \begin{equation*}
-    I_m=\beta\left(C\,\dv{V}{t}+\sum_{s}I_{s}\right),\quad V=\Phi_i-\Phi_e
+    I_m=\beta\left(C\,\pdv{V}{t}+\sum_{s}I_{s}\right),\quad V=\Phi_i-\Phi_e
 \end{equation*}
 (where $\beta$ is a scaling constant with units \si{\per\metre}), one finds
 after some calculations:
 \begin{subequations}
 \begin{align}
     \nabla\cdot\myten{G_i}(\nabla{V}+\nabla\Phi_e)
-    &=\beta\left(C\,\dv{V}{t}+I_{\mathrm{ion}}\right)
+    &=\beta\left(C\,\pdv{V}{t}+I_{\mathrm{ion}}\right)
     \label{eq:i}
     \\
     \nabla\cdot\left((\myten{G_i}+\myten{G_e})\,\nabla\Phi_e\right)
@@ -155,7 +155,7 @@ intra- and extracellular anisotropies are identical, \ie~the respective
 conductivities are proportional:
 \begin{gather}
     \myten{G_e}=\lambda\,\myten{G_i} \nonumber \\ \implies
-    \dv{V}{t}=\nabla\cdot\myten{D}\,\nabla{V}-\frac{1}{C}\sum_{s}I_{s}
+    \pdv{V}{t}=\nabla\cdot\myten{D}\,\nabla{V}-\frac{1}{C}\sum_{s}I_{s}
     \label{eq:divcap}
 \end{gather}
 (with the conductivity tensor $\myten{D}=\frac{1}{C\beta}\myten{G}$)

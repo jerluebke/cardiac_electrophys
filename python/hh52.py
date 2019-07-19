@@ -88,7 +88,7 @@ steps   = t.size
 Ip      = np.zeros_like(t)
 #  Ip[int(20./dt):int(80./dt)] += 10.
 Ip      = 20.*np.ones_like(t)
-V_0 = -7.
+V_0     = -7.
 
 # initialize result arrays
 V = np.zeros(steps)

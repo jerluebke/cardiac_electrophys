@@ -40,15 +40,18 @@ a critical mass) of cardiac tissue (\textrightarrow~\emph{defibrillation}).
 When the cells have repolarized, they can again be governed by the pace given
 by the SA node.
 
-Those aforementioned phenomena resemble spiral waves, which in reality occur
-due to heterogeneity of the tissue. On a simplified homogeneous domain, one can
-generate such spiral waves \eg~by delivering a single impulse in the wake of a
-propagating action potential wave (see section~\ref{sec:spiral1}) or by
-defining an initial wave with a loose end (see section~\ref{sec:spiral2}).
-While the spiral waves discussed in section~\ref{sec:spiral1} can be
-interpreted as ventricular tachycardia, the disruptive and uncoordinated
-dynamics seen in section~\ref{sec:spiral2} resemble ventricular fibrillation
-(see also fig.~38 in \cite{Cherry2008}).
+Such phenomena can be linked to action potentials spreading through the heart's
+tissue like spiral waves, which in reality occur due to heterogeneity of the
+tissue. On a simplified homogeneous domain, one can generate such
+configurations by choosing the initial conditions properly. The setups
+presented above achieve this by delivering a single impulse in the wake of a
+preceding action potential wave (see section~\ref{sec:spiral1}) or by defining
+an initial wave with a loose end (see section~\ref{sec:spiral2}). The spiral
+waves resulting from the first case and occurring in the beginning of
+the second case can be interpreted as ventricular tachycardia; the disruptive
+and uncoordinated behaviour eventually emerging from the second case resembles
+ventricular fibrillation evolving from preceding tachycardia (see also fig.~38
+in \cite{Cherry2008}).
 
 
 \section{Discussion}
@@ -82,7 +85,7 @@ While the gross form of the theoretical estimate and the measured data is
 similar, a rather clear deviation should be acknowledged. Quantitatively
 -- from the compared slopes -- a relative error of 48\% is found. In order to
 make a clear statement whether the error is due to inaccuracies of the equation
-or of the used model, a more in-depth investigation would be helpful.
+or of the used model, a more in-depth investigation would be needed.
 
 \subsubsection{Fenton et al}
 This model was introduced, because the previously discussed A\&P model lacks
@@ -101,11 +104,16 @@ sophisticated ways such as a semi-implicit Crank-Nicolson scheme or
 multi-step Runge-Kutta methods. This would allow for larger time steps (making
 the simulations computationally cheaper) while maintaining accuracy.
 
-It might be interesting to look at a heterogeneous domain, perhaps simply with
-local differences in the conductivity or with a more complex geometry
-resembling the shape of the human heart. One could also set up a simulation
-based on a bi-domain description with anisotropic conductivities and
-investigate external stimuli such as defibrillation.
+It might be interesting to consider a heterogeneous domain, \ie~with
+anisotropic conductivity. One could investigate the behaviour of above
+discussed setups with a conductivity tensor resembling the structure of the
+myofibril. Such a simulation could be expanded to more complex geometries in
+order to describe fibre bundles of the conduction system or re-entrant waves
+due to scar tissue.
+
+Further, developing solution methods for the bi-domain case would allow the
+investigation of the tissue's behaviour when subjected to external stimuli such
+as defibrillation.
 
 
 % vim: set ff=unix tw=79 sw=4 ts=4 et ic ai :

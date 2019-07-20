@@ -45,7 +45,7 @@ When performing the simulation for different lengths, one finds several
 quantities of interest:
 \begin{description}
     \item[Base Cycle Length] \emph{BCL}, the time for the peak to travel along
-        the line one (or the time between two peaks, the period)
+        the line once (the time between two peaks, the period)
     \item[Conduction Velocity] \emph{CV}, Velocity of the peak (length of line
         divided by BCL)
     \item[Action Potential Duration] \emph{APD}, time between upstroke and
@@ -57,12 +57,11 @@ quantities of interest:
 These quantities were measured by monitoring a fixed point on the domain and
 checking at each time step whether the potential crossed either a low or a high
 threshold (5\% and 95\% of the maximal potential respectively).
-The length of the domain was varied between 25 and 200 and for each value ten
-measurements were recorded by letting the peak pass through the domain ten times after
-reaching a stable form. Then average and standard deviation were computed and
+The length of the domain was varied between 25 and 200 and for each value 10
+measurements were recorded by letting the peak pass through the domain 10 times after
+reaching a stable shape. Then average and standard deviation were computed and
 plotted (see \figref{fig:alpha2}).
-It is interesting to note, that for lengths below 25 the pulse can not sustain
-itself.
+For lengths below 25 the pulse can not sustain itself with the used parameters.
 
 \begin{figure}[h]
     \centering
@@ -199,7 +198,7 @@ causing some kind of tail (see \figref{fig:pulse}).
 Now one considers a $128\times512$ grid with von-Neumann boundary conditions
 imposed on all sides. The initial conditions to generate the first pulse are
 the same as described above. Because of the boundary conditions, the pulse is
-not damped on the edges an passes through the domain only once.
+not damped on the edges and passes through the domain only once.
 
 Now a small area of $10\times10$ grid points right in the middle of the domain
 has its membrane potential set to 1. In the absence of any prior excitation
@@ -208,7 +207,7 @@ this perturbation happens in the wake of a preceding action potential an
 interaction with the relaxation variables - which have not yet fully returned
 to their rest values - takes place: Either the perturbation is suppressed right
 away, or it is pushed backwards growing into the shape of an expanding
-croissant whose edges are running forward until the meet in the
+croissant whose edges are running forward until they meet in the
 center. Upon this meeting the croissant becomes a pretzel which runs away in a
 circular fashion and the then slightly inwards turned edges generate a new
 croissant-shaped pulse which undergoes the same process.
